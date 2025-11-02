@@ -75,6 +75,19 @@ def analyze():
         }), 200
         
     except Exception as e:
+        import traceback
+        error_trace = traceback.format_exc()
         print(f"Error analyzing image: {str(e)}")
-        return jsonify({'error': f'Failed to analyze image: {str(e)}'}), 500
+        print(f"Traceback: {error_trace}")
+        
+        # Return user-friendly error message
+        error_message = str(e)
+        if "CUDA" in error_message or "cuda" in error_message:
+            error_message = "GPU/CUDA error. Falling back to CPU processing."
+        elif "model" in error_message.lower() or "Model" in error_message:
+            error_message = "Model loading error. Please check model files."
+        elif "Gemini" in error_message:
+            error_message = "AI description service unavailable. Using fallback descriptions."
+        
+        return jsonify({'error': f'Failed to analyze image: {error_message}'}), 500
 
