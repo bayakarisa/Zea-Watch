@@ -6,10 +6,19 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Environment variables
+# Environment variables (SECRETS - DO NOT COMMIT!)
 .env
 .env.local
 .env*.local
+**/.env
+**/.env.local
+backend/.env
+frontend/.env.local
+frontend/.env
+
+# Setup scripts (contain API keys - DO NOT COMMIT!)
+setup-env.ps1
+setup-env.sh
 
 # Next.js
 .next/
