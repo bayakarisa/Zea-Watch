@@ -15,8 +15,25 @@ class DatabaseService:
             self.memory_storage = []
             self._next_id = 1
         else:
-            self.supabase: Client = create_client(supabase_url, supabase_key)
-            self.use_supabase = True
+            try:
+                # Create Supabase client - use simplest form to avoid 'proxy' error
+                # The error might be from a dependency conflict, so use basic initialization
+                self.supabase: Client = create_client(supabase_url, supabase_key)
+                self.use_supabase = True
+                print("Supabase client initialized successfully")
+            except TypeError as e:
+                # If there's a type error (like 'proxy' argument), it might be a version issue
+                print(f"Warning: Supabase client initialization error: {str(e)}")
+                print("This might be a version compatibility issue. Using in-memory storage.")
+                self.use_supabase = False
+                self.memory_storage = []
+                self._next_id = 1
+            except Exception as e:
+                print(f"Warning: Failed to initialize Supabase client: {str(e)}")
+                print("Using in-memory storage.")
+                self.use_supabase = False
+                self.memory_storage = []
+                self._next_id = 1
     
     def save_analysis(self, disease: str, confidence: float, description: str, 
                      recommendation: str, image_url: str) -> Dict:

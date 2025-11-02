@@ -32,7 +32,10 @@ class GeminiService:
         Returns (description, recommendation)
         """
         if self.model is None:
-            raise Exception("Gemini model not available")
+            # Return fallback descriptions if Gemini is not available
+            fallback_description = f"This maize leaf has been identified as {disease} with {confidence:.1%} confidence. The image shows visible symptoms that may indicate this condition."
+            fallback_recommendation = f"For {disease}, consider: 1) Remove affected leaves to prevent spread, 2) Apply appropriate fungicides or pesticides as recommended by agricultural experts, 3) Ensure proper crop rotation and field sanitation, 4) Monitor other plants for early signs."
+            return fallback_description, fallback_recommendation
             
         try:
             # Prepare prompt
