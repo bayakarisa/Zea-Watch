@@ -1,0 +1,14 @@
+Flask==3.0.0
+Flask-CORS==4.0.0
+python-dotenv==1.0.0
+supabase==2.3.4
+google-generativeai==0.3.2
+Pillow==10.2.0
+numpy==1.26.3
+torch==2.1.2
+torchvision==0.16.2
+transformers==4.36.2
+tensorflow==2.15.0
+requests==2.31.0
+python-multipart==0.0.6
+

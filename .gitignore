@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables
+.env
+.env.local
+.env*.local
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads
+backend/static/uploads/*
+!backend/static/uploads/.gitkeep
+
+# Models
+backend/models/*.h5
+backend/models/*.pth
+backend/models/*.pkl
+*.weights
+
+# Logs
+*.log
+logs/
+
