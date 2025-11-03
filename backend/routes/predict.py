@@ -37,8 +37,24 @@ def analyze():
             image = image.convert('RGB')
         
         # Initialize services
-        model = HybridModel()
         gemini_service = GeminiService()
+        
+        # Validate that the image is a maize leaf BEFORE analysis
+        print("=" * 50)
+        print("STARTING IMAGE VALIDATION")
+        print("=" * 50)
+        is_valid, validation_message = gemini_service.validate_maize_leaf(image)
+        print(f"Validation result: is_valid={is_valid}, message={validation_message}")
+        print("=" * 50)
+        
+        if not is_valid:
+            print(f"❌ VALIDATION FAILED - Rejecting image")
+            return jsonify({'error': validation_message}), 400
+        
+        print("✅ VALIDATION PASSED - Proceeding with analysis")
+        
+        # Initialize other services
+        model = HybridModel()
         db_service = DatabaseService()
         
         # Run AI model prediction

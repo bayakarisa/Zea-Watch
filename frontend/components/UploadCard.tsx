@@ -56,13 +56,22 @@ export const UploadCard: React.FC<UploadCardProps> = ({ onAnalysisComplete }) =>
       // Clear preview after successful analysis
       setPreviewImage(null)
       setSelectedFile(null)
+      setError(null)
       // Reset file inputs
       if (fileInputRef.current) fileInputRef.current.value = ''
       if (cameraInputRef.current) cameraInputRef.current.value = ''
     } catch (error: any) {
       console.error('Analysis error:', error)
-      const errorMessage = error?.response?.data?.error || error?.message || 'Failed to analyze image. Please try again.'
+      // Extract error message - check both response.data.error and message
+      let errorMessage = 'Failed to analyze image. Please try again.'
+      if (error?.response?.data?.error) {
+        errorMessage = error.response.data.error
+      } else if (error?.message) {
+        errorMessage = error.message
+      }
       setError(errorMessage)
+      // Keep preview and file so user can see what they uploaded and try a different image
+      // Don't clear preview on validation error
     } finally {
       setIsUploading(false)
     }
@@ -179,8 +188,19 @@ export const UploadCard: React.FC<UploadCardProps> = ({ onAnalysisComplete }) =>
 
         {/* Error Message */}
         {error && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-            {error}
+          <div className="p-4 bg-red-50 border-2 border-red-300 rounded-lg text-red-800 text-sm flex items-start justify-between gap-2">
+            <div className="flex-1">
+              <strong className="font-semibold">Validation Error:</strong>
+              <p className="mt-1">{error}</p>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 text-red-600 hover:text-red-800 flex-shrink-0"
+              onClick={() => setError(null)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </div>
         )}
 
