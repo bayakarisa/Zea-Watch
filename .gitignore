@@ -50,5 +50,4 @@ backend/models/*.pkl
 *.log
 logs/
 
-# Ignore the backend virtual environment
 backend/.venv/
