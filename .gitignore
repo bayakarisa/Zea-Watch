@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables (SECRETS - DO NOT COMMIT!)
+.env
+.env.local
+.env*.local
+**/.env
+**/.env.local
+backend/.env
+frontend/.env.local
+frontend/.env
+
+# Setup scripts (contain API keys - DO NOT COMMIT!)
+setup-env.ps1
+setup-env.sh
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads
+backend/static/uploads/*
+!backend/static/uploads/.gitkeep
+
+# Models
+backend/models/*.h5
+backend/models/*.pth
+backend/models/*.pkl
+*.weights
+
+# Logs
+*.log
+logs/
+
+# Ignore the backend virtual environment
+backend/.venv/
