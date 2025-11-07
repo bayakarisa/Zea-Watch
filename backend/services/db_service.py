@@ -5,38 +5,33 @@ from typing import Optional, List, Dict
 
 class DatabaseService:
     def __init__(self):
+        # --- FIX ---
+        # Set defaults for in-memory/fallback *first*.
+        # This ensures _next_id ALWAYS exists.
+        self.use_supabase = False
+        self.memory_storage = []
+        self._next_id = 1  
+        # --- END FIX ---
+        
         supabase_url = os.getenv('SUPABASE_URL')
         supabase_key = os.getenv('SUPABASE_KEY')
         
         if not supabase_url or not supabase_key:
-            # Fallback to in-memory storage for development
+            # Credentials not found, will use in-memory defaults
             print("Warning: Supabase credentials not found. Using in-memory storage.")
-            self.use_supabase = False
-            self.memory_storage = []
-            self._next_id = 1
         else:
+            # Try to connect to Supabase
             try:
-                # Create Supabase client - use simplest form to avoid 'proxy' error
-                # The error might be from a dependency conflict, so use basic initialization
                 self.supabase: Client = create_client(supabase_url, supabase_key)
-                self.use_supabase = True
+                self.use_supabase = True  # <-- Update this if connection is good
                 print("Supabase client initialized successfully")
-            except TypeError as e:
-                # If there's a type error (like 'proxy' argument), it might be a version issue
-                print(f"Warning: Supabase client initialization error: {str(e)}")
-                print("This might be a version compatibility issue. Using in-memory storage.")
-                self.use_supabase = False
-                self.memory_storage = []
-                self._next_id = 1
             except Exception as e:
+                # Connection failed, will use in-memory defaults
                 print(f"Warning: Failed to initialize Supabase client: {str(e)}")
                 print("Using in-memory storage.")
-                self.use_supabase = False
-                self.memory_storage = []
-                self._next_id = 1
     
     def save_analysis(self, disease: str, confidence: float, description: str, 
-                     recommendation: str, image_url: str) -> Dict:
+                        recommendation: str, image_url: str) -> Dict:
         """Save analysis result to database"""
         data = {
             'disease': disease,
@@ -62,7 +57,7 @@ class DatabaseService:
     def _save_to_memory(self, data: Dict) -> Dict:
         """Save to in-memory storage (fallback)"""
         data['id'] = str(self._next_id)
-        self._next_id += 1
+        self._next_id += 1 # This line will no longer crash
         self.memory_storage.append(data)
         return data
     
@@ -99,4 +94,3 @@ class DatabaseService:
         initial_len = len(self.memory_storage)
         self.memory_storage = [item for item in self.memory_storage if item.get('id') != id]
         return len(self.memory_storage) < initial_len
-

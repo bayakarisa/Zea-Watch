@@ -7,12 +7,13 @@ from torchvision import transforms
 from transformers import ViTImageProcessor, ViTForImageClassification
 import torchvision.models as models
 
-class HybridModel:
+class HybridModel(nn.Module): # <-- Make sure it inherits!
     def __init__(self):
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.load_models()
+        super(HybridModel, self).__init__() # <-- Add this!
         
-        # Common diseases for maize
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        
+        # Define this FIRST
         self.disease_classes = [
             'Healthy',
             'Northern Leaf Blight',
@@ -21,6 +22,9 @@ class HybridModel:
             'Bacterial Leaf Streak',
             'Anthracnose Leaf Blight'
         ]
+        
+        # Call this LAST
+        self.load_models() 
         
         # Image preprocessing
         self.transform = transforms.Compose([
@@ -48,9 +52,14 @@ class HybridModel:
             # Load Vision Transformer (ViT)
             try:
                 self.vit_processor = ViTImageProcessor.from_pretrained('google/vit-base-patch16-224')
+                # self.vit_model = ViTForImageClassification.from_pretrained(
+                #     'google/vit-base-patch16-224',
+                #     num_labels=len(self.disease_classes)
+                # )
                 self.vit_model = ViTForImageClassification.from_pretrained(
                     'google/vit-base-patch16-224',
-                    num_labels=len(self.disease_classes)
+                    num_labels=len(self.disease_classes),
+                    ignore_mismatched_sizes=True
                 )
                 self.vit_model.eval()
                 self.vit_model.to(self.device)
