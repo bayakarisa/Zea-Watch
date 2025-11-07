@@ -50,3 +50,4 @@ backend/models/*.pkl
 *.log
 logs/
 
+backend/.venv/
