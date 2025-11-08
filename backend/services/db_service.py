@@ -26,7 +26,11 @@ class DatabaseService:
                 self.use_supabase = True  # <-- Update this if connection is good
                 print("Supabase client initialized successfully")
             except Exception as e:
+<<<<<<< HEAD
+                # Connection failed, will use in-key defaults
+=======
                 # Connection failed, will use in-memory defaults
+>>>>>>> 0de3d7c7e3c2451eff520d137e93573662b9e6f9
                 print(f"Warning: Failed to initialize Supabase client: {str(e)}")
                 print("Using in-memory storage.")
     

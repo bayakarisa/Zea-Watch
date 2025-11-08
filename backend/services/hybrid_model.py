@@ -21,15 +21,45 @@ class HybridModel(nn.Module):
             'Gray Leaf Spot'
         ]
         
+<<<<<<< HEAD
+        # --- CRITICAL ---
+        # We MUST define the models FIRST, before loading weights.
+        
+        # 1. Define the CNN
+        # --- THIS IS THE FIX: Set pretrained=True to match the training code ---
+        self.cnn_model = models.efficientnet_b0(pretrained=True) 
+        num_features = self.cnn_model.classifier[1].in_features
+        self.cnn_model.classifier[1] = nn.Linear(num_features, len(self.disease_classes))
+        
+        # 2. Define the ViT
+        try:
+            self.vit_model = ViTForImageClassification.from_pretrained(
+                'google/vit-base-patch16-224',
+                num_labels=len(self.disease_classes),
+                ignore_mismatched_sizes=True
+            )
+        except Exception as e:
+            print(f"Warning: Could not load ViT model: {str(e)}")
+            self.vit_model = None
+            
+        # 3. NOW load our trained models
+        self.load_models() 
+        
+        # 4. Define other helpers
+=======
         # Load models for INFERENCE
         self.load_models() 
         
+>>>>>>> 0de3d7c7e3c2451eff520d137e93573662b9e6f9
         try:
             self.vit_processor = ViTImageProcessor.from_pretrained('google/vit-base-patch16-224')
         except Exception:
             self.vit_processor = None
         
+<<<<<<< HEAD
+=======
         # This transform is for PREDICTION
+>>>>>>> 0de3d7c7e3c2451eff520d137e93573662b9e6f9
         self.transform = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor(),
@@ -40,6 +70,27 @@ class HybridModel(nn.Module):
     def load_models(self):
         """Load CNN and Transformer models for INFERENCE."""
         
+<<<<<<< HEAD
+        model_path = os.getenv('MODEL_PATH', './models/hybrid_model.pth')
+        
+        if not os.path.exists(model_path):
+            print(f"❌ CRITICAL ERROR: Model file not found at {model_path}")
+            return
+            
+        try:
+            print(f"Loading trained weights from {model_path}...")
+            # Load the weights into the model structures we just defined
+            self.load_state_dict(torch.load(model_path, map_location=self.device))
+            print("✅ Weights loaded successfully.")
+            
+        except Exception as e:
+            print(f"❌ CRITICAL ERROR: Failed to load model weights: {e}")
+            print("The hybrid_model.pth file might be corrupted. Please re-download it from Google Drive.")
+            return
+
+        # --- Set models to INFERENCE mode ---
+        self.eval() 
+=======
         # --- Load EfficientNet (CNN) ---
         # Set pretrained=False because we are about to load our own weights
         self.cnn_model = models.efficientnet_b0(pretrained=False) 
@@ -71,6 +122,7 @@ class HybridModel(nn.Module):
 
         # --- Set models to INFERENCE mode ---
         self.train(False) # Set the parent module to eval mode
+>>>>>>> 0de3d7c7e3c2451eff520d137e93573662b9e6f9
         self.cnn_model.eval()
         if self.vit_model:
             self.vit_model.eval()
@@ -81,10 +133,16 @@ class HybridModel(nn.Module):
 
 
     def forward(self, cnn_input, vit_input):
+<<<<<<< HEAD
+        cnn_logits = self.cnn_model(cnn_input)
+        if self.vit_model:
+            vit_outputs = self.vit_model(**vit_input)
+=======
         # This is only used for training, but needs to exist
         cnn_logits = self.cnn_model(cnn_input)
         if self.vit_model:
             vit_outputs = self.vit_model(**inputs)
+>>>>>>> 0de3d7c7e3c2451eff520d137e93573662b9e6f9
             vit_logits = vit_outputs.logits
             combined_logits = (cnn_logits + vit_logits) / 2
             return combined_logits
@@ -92,6 +150,18 @@ class HybridModel(nn.Module):
             return cnn_logits
 
     def predict(self, image: Image.Image) -> tuple[str, float]:
+<<<<<<< HEAD
+        if self.cnn_model is None:
+            return 'Healthy', 0.85
+        
+        self.eval()
+        self.cnn_model.eval()
+        if self.vit_model:
+            self.vit_model.eval()
+
+        all_probs = []
+
+=======
         """
         Your original predict function.
         """
@@ -104,6 +174,7 @@ class HybridModel(nn.Module):
         all_probs = []
 
         # CNN Prediction
+>>>>>>> 0de3d7c7e3c2451eff520d137e93573662b9e6f9
         try:
             img_tensor = self.transform(image).unsqueeze(0).to(self.device)
             with torch.no_grad():
@@ -113,7 +184,10 @@ class HybridModel(nn.Module):
         except Exception as e:
             print(f"CNN prediction error: {str(e)}")
         
+<<<<<<< HEAD
+=======
         # Transformer Prediction
+>>>>>>> 0de3d7c7e3c2451eff520d137e93573662b9e6f9
         if self.vit_model and self.vit_processor:
             try:
                 inputs = self.vit_processor(image, return_tensors="pt").to(self.device)
