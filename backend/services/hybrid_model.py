@@ -7,19 +7,27 @@ from torchvision import transforms
 from transformers import ViTImageProcessor, ViTForImageClassification
 import torchvision.models as models
 
-class HybridModel(nn.Module):
+class HybridModel(nn.Module): 
     def __init__(self):
-        super(HybridModel, self).__init__()
-
+        super(HybridModel, self).__init__() 
+        
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
+        
+        # Your 4-class list
         self.disease_classes = [
             'Healthy',
             'Northern Leaf Blight',
             'Common Rust',
             'Gray Leaf Spot'
         ]
-
+        
+        # --- CRITICAL FIX ---
+        # 1. Define a BLANK CNN (`pretrained=False`)
+        self.cnn_model = models.efficientnet_b0(pretrained=False) 
+        num_features = self.cnn_model.classifier[1].in_features
+        self.cnn_model.classifier[1] = nn.Linear(num_features, len(self.disease_classes))
+        
+        # 2. Define a BLANK ViT
         try:
             self.vit_model = ViTForImageClassification.from_pretrained(
                 'google/vit-base-patch16-224',
@@ -29,34 +37,55 @@ class HybridModel(nn.Module):
         except Exception as e:
             print(f"Warning: Could not load ViT model: {str(e)}")
             self.vit_model = None
-
+            
+        # 3. NOW load our trained models
+        self.load_models() 
+        
+        # 4. Define other helpers
         try:
             self.vit_processor = ViTImageProcessor.from_pretrained('google/vit-base-patch16-224')
         except Exception:
             self.vit_processor = None
-
+        
         self.transform = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406],
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], 
                                  std=[0.229, 0.224, 0.225])
         ])
-
+    
+    def load_models(self):
+        """Load CNN and Transformer models for INFERENCE."""
+        
         model_path = os.getenv('MODEL_PATH', './models/hybrid_model.pth')
-
+        
         if not os.path.exists(model_path):
+            print(f"❌ CRITICAL ERROR: Model file not found at {model_path}")
+            raise FileNotFoundError(f"Model file not found: {model_path}")
+            
+        try:
+            print(f"Loading trained weights from {model_path}...")
+            # Load the entire saved "brain" into the blank model structure
+            self.load_state_dict(torch.load(model_path, map_location=self.device))
+            print("✅ Weights loaded successfully.")
+            
+        except Exception as e:
+            print(f"❌ CRITICAL ERROR: Failed to load model weights: {e}")
+            print("The hybrid_model.pth file might be corrupted OR a code mismatch.")
+            raise e
 
+        # --- Set models to INFERENCE mode ---
+        self.eval() 
         self.cnn_model.eval()
         if self.vit_model:
             self.vit_model.eval()
-
+            
         self.cnn_model.to(self.device)
         if self.vit_model:
             self.vit_model.to(self.device)
 
 
     def forward(self, cnn_input, vit_input):
-
         cnn_logits = self.cnn_model(cnn_input)
         if self.vit_model:
             vit_outputs = self.vit_model(**vit_input)
@@ -67,17 +96,15 @@ class HybridModel(nn.Module):
             return cnn_logits
 
     def predict(self, image: Image.Image) -> tuple[str, float]:
-
         if self.cnn_model is None:
             return 'Healthy', 0.85
-
+        
         self.eval()
         self.cnn_model.eval()
         if self.vit_model:
             self.vit_model.eval()
 
         all_probs = []
-
 
         try:
             img_tensor = self.transform(image).unsqueeze(0).to(self.device)
@@ -87,7 +114,7 @@ class HybridModel(nn.Module):
                 all_probs.append(cnn_probs)
         except Exception as e:
             print(f"CNN prediction error: {str(e)}")
-
+        
         if self.vit_model and self.vit_processor:
             try:
                 inputs = self.vit_processor(image, return_tensors="pt").to(self.device)
@@ -97,13 +124,13 @@ class HybridModel(nn.Module):
                     all_probs.append(vit_probs)
             except Exception as e:
                 print(f"ViT prediction error: {str(e)}")
-
+        
         if not all_probs:
             return 'Healthy', 0.85
-
+        
         final_probs = torch.stack(all_probs).mean(dim=0)
         final_conf, final_idx = torch.max(final_probs, 1)
-
+        
         disease_name = self.disease_classes[final_idx.item()]
-
+        
         return disease_name, final_conf.item()
