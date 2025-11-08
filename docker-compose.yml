@@ -26,7 +26,7 @@ services:
       - SUPABASE_KEY=${SUPABASE_KEY}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - UPLOAD_FOLDER=/app/static/uploads
-      - MODEL_PATH=/app/models/hybrid_model.h5
+      - MODEL_PATH=app/models/hybrid_model.pth
     volumes:
       - ./backend:/app
       - uploads:/app/static/uploads

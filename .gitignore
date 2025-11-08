@@ -61,6 +61,4 @@ __pycache__/
 # Node.js
 node_modules/
 .next/
-=======
-backend/.venv/
->>>>>>> 0de3d7c7e3c2451eff520d137e93573662b9e6f9
+
