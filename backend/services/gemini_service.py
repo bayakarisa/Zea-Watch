@@ -204,10 +204,7 @@ Your answer:"""
             return False, f"Validation service error: {str(e)}. Please try again or contact support."
     
     def get_insights(self, disease: str, confidence: float, image: Image.Image) -> tuple[str, str]:
-        """
-        Get disease description and recommendations from Gemini API.
-        Returns (description, recommendation)
-        """
+
         if self.model is None:
             # Return fallback descriptions if Gemini is not available
             fallback_description = f"This maize leaf has been identified as {disease} with {confidence:.1%} confidence. The image shows visible symptoms that may indicate this condition."
@@ -215,18 +212,33 @@ Your answer:"""
             return fallback_description, fallback_recommendation
             
         try:
-            # Prepare prompt
-            prompt = f"""
-            Analyze this maize leaf image that has been classified as: {disease} (confidence: {confidence:.2%}).
-            
-            Provide:
-            1. A detailed description of this disease condition (2-3 sentences)
-            2. Specific treatment recommendations for farmers (3-4 bullet points)
-            
-            Format your response as:
-            DESCRIPTION: [your description here]
-            RECOMMENDATIONS: [your recommendations here]
-            """
+            # --- CHANGED: Use different prompts for Healthy vs. Disease ---
+            if "healthy" in disease.lower():
+                # --- This is the new prompt for HEALTHY plants ---
+                prompt = f"""
+                This image of a maize leaf has been classified as HEALTHY with {confidence:.2%} confidence.
+                
+                Please provide:
+                1. A brief description (2-3 sentences) confirming the leaf appears healthy and what a farmer should look for to KEEP it healthy (e.g., good color, no spots).
+                2. General recommendations for preventative care and maintaining a healthy maize crop (3-4 bullet points).
+                
+                Format your response as:
+                DESCRIPTION: [your description here]
+                RECOMMENDATIONS: [your recommendations here]
+                """
+            else:
+                # --- This is your original prompt for DISEASES ---
+                prompt = f"""
+                Analyze this maize leaf image that has been classified as: {disease} (confidence: {confidence:.2%}).
+                
+                Provide:
+                1. A detailed description of this disease condition (2-3 sentences)
+                2. Specific treatment recommendations for farmers (3-4 bullet points)
+                
+                Format your response as:
+                DESCRIPTION: [your description here]
+                RECOMMENDATIONS: [your recommendations here]
+                """
             
             # Convert PIL Image to bytes for Gemini
             img_bytes = io.BytesIO()
@@ -254,7 +266,6 @@ Your answer:"""
         except Exception as e:
             print(f"Gemini API error: {str(e)}")
             # Return fallback descriptions
-            fallback_description = f"This maize leaf has been identified as {disease} with {confidence:.1%} confidence. The image shows visible symptoms that may indicate this condition."
-            fallback_recommendation = f"For {disease}, consider: 1) Remove affected leaves to prevent spread, 2) Apply appropriate fungicides or pesticides as recommended by agricultural experts, 3) Ensure proper crop rotation and field sanitation, 4) Monitor other plants for early signs."
+            fallback_description = f"This maize leaf has been identified as {disease} with {confidence:.1%} confidence."
+            fallback_recommendation = f"For {disease}, consult with an agricultural expert for specific treatment."
             return fallback_description, fallback_recommendation
-
