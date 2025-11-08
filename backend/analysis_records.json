@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "disease": "Common Rust",
+    "confidence": 0.9124819040298462,
+    "description": "Common rust, caused by the fungus *Puccinia sorghi*, manifests as small, circular to elongated, cinnamon-brown pustules that erupt on both the upper and lower surfaces of maize leaves. These pustules contain powdery, rust-colored spores that can give the leaf a rough, sandpaper-like feel. While the provided image shows very early or mild symptoms as tiny yellowish specks, a more developed infection can lead to significant leaf coverage, which reduces photosynthesis and may impact yield, especially if it occurs before pollination.",
+    "recommendation": "*   **Plant Resistant Hybrids:** The most effective and economical long-term management strategy is to select and plant maize hybrids that have genetic resistance to Common Rust.\n*   **Scout Fields Regularly:** Monitor crops frequently, especially during periods of cool, humid weather (60-77\u00b0F or 16-25\u00b0C) which favors disease development. Early detection is key to determining if and when treatment is necessary.\n*   **Apply Foliar Fungicides:** If scouting reveals that the disease is progressing on susceptible hybrids near the critical tasseling growth stage, consider a timely application of a foliar fungicide. Products containing strobilurins (e.g., pyraclostrobin, azoxystrobin) or triazoles are effective at controlling the disease and protecting yield potential.\n*   **Utilize Cultural Practices:** Practice crop rotation with non-host crops like soybeans or alfalfa and consider tillage to bury infected crop residue. This helps to reduce the amount of fungal inoculum that can survive and infect the following year's crop.",
+    "image_url": "/static/uploads/Corn_Health_943.jpg",
+    "created_at": "2025-11-08T23:27:03.997961"
+  },
+  {
+    "id": 2,
+    "disease": "Gray Leaf Spot",
+    "confidence": 0.5000213980674744,
+    "description": "The image shows symptoms characteristic of Gray Leaf Spot, including the elongated, rectangular, tan-colored lesions that are restricted by and run parallel to the leaf veins. The 50% confidence level may be due to the presence of additional symptoms, such as the numerous small, reddish-brown specks scattered across the leaf, which could indicate a co-infection with another disease like Common Rust. These diseases often thrive in similar warm, humid conditions.",
+    "recommendation": "*   **Apply Foliar Fungicides:** If the disease is identified early and conditions favor its spread (prolonged high humidity and warm weather), consider a timely application of a foliar fungicide. Products containing strobilurins, triazoles, or a combination of both are often effective, and many will also control rust diseases.\n*   **Select Resistant Hybrids:** For future seasons, choose maize hybrids with a high level of genetic resistance to Gray Leaf Spot. This is the most effective and economical long-term management strategy.\n*   **Manage Crop Residue:** The fungus that causes Gray Leaf Spot overwinters in infected corn residue. Implement tillage practices where feasible to bury the residue and reduce the primary source of inoculum for the next season.\n*   **Practice Crop Rotation:** Rotate to a non-host crop, such as soybeans, wheat, or alfalfa, for at least one year. This helps to break the disease cycle by reducing the amount of fungal inoculum present in the field.",
+    "image_url": "/static/uploads/Corn_Blight_939.JPG",
+    "created_at": "2025-11-08T23:29:26.158403"
+  },
+  {
+    "id": 3,
+    "disease": "Common Rust",
+    "confidence": 0.9561623334884644,
+    "description": "Common Rust is a fungal disease caused by *Puccinia sorghi*, which manifests as small, oval or elongated, cinnamon-brown pustules on both the upper and lower surfaces of maize leaves. These pustules eventually rupture to release powdery, rust-colored spores that are easily spread by wind. The disease thrives in cool, humid weather and can reduce the plant's photosynthetic capacity, leading to yield loss if the infection becomes severe before pollination.",
+    "recommendation": "*   **Select Resistant Hybrids:** The most effective and economical long-term control method is to plant maize hybrids that have genetic resistance to Common Rust.\n*   **Apply Foliar Fungicides:** For susceptible hybrids, consider applying a foliar fungicide if the disease is detected early and spreading, particularly in the two weeks before or after tasseling. Products containing strobilurins (QoI) or triazoles (DMI) are effective in managing the disease and protecting yield.\n*   **Scout Fields Regularly:** Monitor fields frequently, especially leading up to pollination, to assess disease severity. A fungicide application is often justified if rust is present on a significant number of plants and conditions favor further development.\n*   **Utilize Cultural Practices:** After harvest, use tillage to bury infected crop residue, which helps reduce the amount of fungal inoculum for the next season. Maintaining balanced soil fertility can also improve overall plant health and resilience to disease.",
+    "image_url": "/static/uploads/Corn_Health_940.jpg",
+    "created_at": "2025-11-08T23:31:35.559228"
+  },
+  {
+    "id": 4,
+    "disease": "Common Rust",
+    "confidence": 0.9124819040298462,
+    "description": "Common rust, caused by the fungus *Puccinia sorghi*, appears on maize leaves as small, oval or elongated, cinnamon-brown pustules. These powdery pustules can be found on both the upper and lower leaf surfaces and will rupture the epidermis, releasing rusty-colored spores that can be wiped off. The disease is favored by cool temperatures (60-77\u00b0F or 16-25\u00b0C) and high humidity, often appearing earlier in the growing season.",
+    "recommendation": "*   **Plant Resistant Hybrids:** The most effective and economical management strategy is to select and plant maize hybrids with genetic resistance to common rust.\n*   **Scout Fields Regularly:** Monitor crops frequently, especially before tasseling. If rust pustules are found on 50% or more of the plants and conditions are favorable for disease, a fungicide application may be necessary.\n*   **Apply Fungicides:** If disease pressure is high on a susceptible hybrid, consider applying a foliar fungicide. Applications are most beneficial when made early in the disease cycle, typically between the tasseling (VT) and silking (R1) growth stages.\n*   **Manage Alternate Hosts:** Where applicable, control alternate hosts like yellow oxalis (wood sorrel), as they can play a role in the fungus's life cycle and contribute to early-season infections.",
+    "image_url": "/static/uploads/Corn_Health_943.jpg",
+    "created_at": "2025-11-08T23:50:29.140536"
+  },
+  {
+    "id": 5,
+    "disease": "Northern Leaf Blight",
+    "confidence": 0.5818595290184021,
+    "description": "Northern Leaf Blight is a fungal disease in maize caused by *Exserohilum turcicum*. The disease first appears as small, water-soaked, elliptical spots on the leaves, which can develop into the long (1-6 inches), tan, \"cigar-shaped\" lesions characteristic of the disease. The numerous small, tan lesions visible in the image represent an early stage of infection that, if left unmanaged, can merge and destroy large areas of leaf tissue, reducing photosynthesis and ultimately lowering grain yield.",
+    "recommendation": "*   **Plant Resistant Hybrids:** The most effective and economical management strategy is to select and plant maize hybrids that have a high degree of genetic resistance or tolerance to Northern Leaf Blight.\n*   **Cultural Practices:** Reduce the amount of fungal inoculum for the next season by rotating crops with a non-host like soybeans or alfalfa. Where feasible, use tillage to bury infected crop residue, as the fungus overwinters on this material.\n*   **Foliar Fungicides:** Scout fields regularly, especially in the weeks leading up to and following tasseling. If the disease is present and conditions are favorable (high humidity, moderate temperatures), consider a timely application of a foliar fungicide, particularly to protect the ear leaf and the leaves above it, which are critical for grain fill.\n*   **Improve Airflow:** Avoid excessively high planting densities to promote better air circulation within the crop canopy, which helps leaves dry more quickly and reduces the duration of conditions favorable for fungal infection.",
+    "image_url": "/static/uploads/Corn_Gray_Spot_458.JPG",
+    "created_at": "2025-11-08T23:51:43.868782"
+  },
+  {
+    "id": 6,
+    "disease": "Northern Leaf Blight",
+    "confidence": 0.5962329506874084,
+    "description": "Northern Leaf Blight (NLB) is a fungal disease caused by *Exserohilum turcicum*, characterized by long (1 to 6 inches), elliptical, grayish-green to tan lesions that run parallel to the leaf veins. These distinctive \"cigar-shaped\" lesions can merge and destroy large areas of leaf tissue, reducing the plant's photosynthetic capacity and potentially causing significant yield loss, especially if infection occurs before or during tasseling. The disease is favored by moderate temperatures, high humidity, and heavy dews.",
+    "recommendation": "*   **Select Resistant Hybrids:** The most effective and economical management strategy is to plant maize hybrids with genetic resistance to Northern Leaf Blight. Consult with your seed dealer to choose hybrids best suited for your region.\n*   **Implement Cultural Practices:** Reduce fungal inoculum by rotating crops with non-hosts like soybeans or alfalfa. Additionally, tillage (where feasible) can help bury infected crop residue, accelerating its decomposition and reducing the source of spores for the following season.\n*   **Apply Foliar Fungicides:** If NLB is detected on susceptible hybrids early in the season and weather conditions favor its spread, a timely foliar fungicide application can be effective. Scout fields regularly and consider applying a fungicide between the tasseling (VT) and early dough (R3) growth stages for the best protection and return on investment.\n*   **Scout Fields Regularly:** Begin scouting fields for NLB lesions before tasseling. Early detection is crucial for making informed decisions about fungicide applications, especially in high-risk situations (susceptible hybrid, no-till, corn-on-corn rotation).",
+    "image_url": "/static/uploads/Corn_Gray_Spot_457.JPG",
+    "created_at": "2025-11-08T23:56:30.215361"
+  },
+  {
+    "id": 7,
+    "disease": "Northern Leaf Blight",
+    "confidence": 0.9811462163925171,
+    "description": "Northern Leaf Blight (NLB) is a fungal disease caused by *Exserohilum turcicum*, characterized by long (1-6 inches), elliptical, tan or grayish \"cigar-shaped\" lesions that run parallel to the leaf veins. The disease typically starts on the lower leaves and progresses up the plant, with lesions merging to cause large areas of dead tissue, which significantly reduces photosynthesis. Severe infections, especially those that occur before or during tasseling, can lead to substantial yield losses.",
+    "recommendation": "*   **Select Resistant Hybrids:** The most effective and economical management strategy is to plant maize hybrids that have a high genetic resistance rating for Northern Leaf Blight. Consult with your seed dealer to choose the best-suited varieties for your region.\n*   **Cultural Practices:** Implement crop rotation with non-host crops such as soybeans, wheat, or alfalfa. Where feasible, use tillage to bury infected corn residue, as the fungus overwinters on this debris, reducing the primary source of inoculum for the next season.\n*   **Foliar Fungicide Application:** Scout fields regularly, especially from the V10 stage through tasseling. If the disease is present on 50% of plants and conditions are favorable for spread (high humidity, moderate temperatures), a timely foliar fungicide application can be very effective at protecting the upper canopy and preserving yield.\n*   **Manage Irrigation:** If irrigating, schedule watering to allow plant leaves to dry completely before nightfall. Avoiding prolonged periods of leaf wetness can help reduce the infection and spread of the fungus.",
+    "image_url": "/static/uploads/Corn_Gray_Spot_462.JPG",
+    "created_at": "2025-11-09T00:01:21.992362"
+  }
+]
