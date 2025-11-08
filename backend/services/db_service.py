@@ -1,68 +1,75 @@
 import os
 import json
 from datetime import datetime
-from pathlib import Path
+from typing import Optional, List, Dict
 
 class DatabaseService:
     def __init__(self):
-        self.db_file = os.getenv('DB_FILE', 'analysis_records.json')
+        self.db_file = 'analysis_records.json'
+        self.memory_storage = self._load_db()
         
-        # If DB_FILE is not set, use in-memory storage
-        if not self.db_file or self.db_file == 'memory':
-            self.use_memory = True
-            self.records = []
-            print("Using in-memory storage.")
+        # Set the next ID based on the highest existing ID
+        if self.memory_storage:
+            self._next_id = max(int(item.get('id', 0)) for item in self.memory_storage) + 1
         else:
-            self.use_memory = False
-            # Ensure the database file exists
-            if not os.path.exists(self.db_file):
-                Path(self.db_file).write_text('[]')
-                print(f"Created new database file: {self.db_file}")
-            else:
-                print(f"Using existing database: {self.db_file}")
+            self._next_id = 1
+            
+        print(f"Using existing database: {self.db_file}")
 
-    def save_analysis(self, disease, confidence, description, recommendation, image_url):
-        """Save analysis results to database."""
-        record = {
-            'id': self._generate_id(),
+    def _load_db(self) -> List[Dict]:
+        """Load the JSON database file from disk."""
+        if not os.path.exists(self.db_file):
+            return []
+        try:
+            with open(self.db_file, 'r') as f:
+                data = json.load(f)
+                return data if isinstance(data, list) else []
+        except json.JSONDecodeError:
+            print(f"Warning: {self.db_file} is corrupted. Starting with an empty database.")
+            return []
+
+    def _save_db(self):
+        """Save the in-memory database to the JSON file."""
+        try:
+            with open(self.db_file, 'w') as f:
+                json.dump(self.memory_storage, f, indent=4)
+        except IOError as e:
+            print(f"Error saving database: {e}")
+    
+    def save_analysis(self, disease: str, confidence: float, description: str, 
+                        recommendation: str, image_url: str) -> Dict:
+        """Save analysis result to the JSON database."""
+        data = {
             'disease': disease,
             'confidence': confidence,
             'description': description,
             'recommendation': recommendation,
             'image_url': image_url,
-            'created_at': datetime.now().isoformat()
+            'created_at': datetime.utcnow().isoformat()
         }
-
-        if self.use_memory:
-            self.records.append(record)
-        else:
-            records = self._read_records()
-            records.append(record)
-            self._write_records(records)
-
-        return record
-
-    def get_analysis_history(self):
-        """Retrieve analysis history."""
-        if self.use_memory:
-            return self.records
-        return self._read_records()
-
-    def _generate_id(self):
-        """Generate a unique ID for new records."""
-        existing = self.get_analysis_history()
-        if not existing:
-            return 1
-        return max(record['id'] for record in existing) + 1
-
-    def _read_records(self):
-        """Read records from JSON file."""
-        if not os.path.exists(self.db_file):
-            return []
-        with open(self.db_file, 'r') as f:
-            return json.load(f)
-
-    def _write_records(self, records):
-        """Write records to JSON file."""
-        with open(self.db_file, 'w') as f:
-            json.dump(records, f, indent=2)
+        
+        data['id'] = str(self._next_id)
+        self._next_id += 1
+        
+        self.memory_storage.append(data)
+        self._save_db() # Save changes to the file
+        return data
+    
+    def get_all_analyses(self) -> List[Dict]:
+        """
+        Get all analysis results, sorted by date.
+        This is the function that was missing.
+        """
+        # Data is already in memory, just sort and return it
+        return sorted(self.memory_storage, key=lambda x: x.get('created_at', ''), reverse=True)
+    
+    def delete_analysis(self, id: str) -> bool:
+        """Delete analysis by ID from the JSON database."""
+        initial_len = len(self.memory_storage)
+        self.memory_storage = [item for item in self.memory_storage if item.get('id') != id]
+        
+        # If an item was actually deleted, save the change
+        if len(self.memory_storage) < initial_len:
+            self._save_db()
+            return True
+        return False
