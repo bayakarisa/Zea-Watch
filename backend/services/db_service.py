@@ -1,26 +1,44 @@
 import os
-from supabase import create_client, Client
+import json
 from datetime import datetime
 from typing import Optional, List, Dict
 
 class DatabaseService:
     def __init__(self):
-        supabase_url = os.getenv('SUPABASE_URL')
-        supabase_key = os.getenv('SUPABASE_KEY')
+        self.db_file = 'analysis_records.json'
+        self.memory_storage = self._load_db()
         
-        if not supabase_url or not supabase_key:
-            # Fallback to in-memory storage for development
-            print("Warning: Supabase credentials not found. Using in-memory storage.")
-            self.use_supabase = False
-            self.memory_storage = []
-            self._next_id = 1
+        # Set the next ID based on the highest existing ID
+        if self.memory_storage:
+            self._next_id = max(int(item.get('id', 0)) for item in self.memory_storage) + 1
         else:
-            self.supabase: Client = create_client(supabase_url, supabase_key)
-            self.use_supabase = True
+            self._next_id = 1
+            
+        print(f"Using existing database: {self.db_file}")
+
+    def _load_db(self) -> List[Dict]:
+        """Load the JSON database file from disk."""
+        if not os.path.exists(self.db_file):
+            return []
+        try:
+            with open(self.db_file, 'r') as f:
+                data = json.load(f)
+                return data if isinstance(data, list) else []
+        except json.JSONDecodeError:
+            print(f"Warning: {self.db_file} is corrupted. Starting with an empty database.")
+            return []
+
+    def _save_db(self):
+        """Save the in-memory database to the JSON file."""
+        try:
+            with open(self.db_file, 'w') as f:
+                json.dump(self.memory_storage, f, indent=4)
+        except IOError as e:
+            print(f"Error saving database: {e}")
     
     def save_analysis(self, disease: str, confidence: float, description: str, 
-                     recommendation: str, image_url: str) -> Dict:
-        """Save analysis result to database"""
+                        recommendation: str, image_url: str) -> Dict:
+        """Save analysis result to the JSON database."""
         data = {
             'disease': disease,
             'confidence': confidence,
@@ -30,56 +48,28 @@ class DatabaseService:
             'created_at': datetime.utcnow().isoformat()
         }
         
-        if self.use_supabase:
-            try:
-                result = self.supabase.table('analyses').insert(data).execute()
-                if result.data:
-                    return result.data[0]
-            except Exception as e:
-                print(f"Error saving to Supabase: {str(e)}")
-                # Fallback to memory
-                return self._save_to_memory(data)
-        else:
-            return self._save_to_memory(data)
-    
-    def _save_to_memory(self, data: Dict) -> Dict:
-        """Save to in-memory storage (fallback)"""
         data['id'] = str(self._next_id)
         self._next_id += 1
+        
         self.memory_storage.append(data)
+        self._save_db() # Save changes to the file
         return data
     
     def get_all_analyses(self) -> List[Dict]:
-        """Get all analysis results"""
-        if self.use_supabase:
-            try:
-                result = self.supabase.table('analyses').select('*').order('created_at', desc=True).execute()
-                return result.data if result.data else []
-            except Exception as e:
-                print(f"Error fetching from Supabase: {str(e)}")
-                return self._get_from_memory()
-        else:
-            return self._get_from_memory()
-    
-    def _get_from_memory(self) -> List[Dict]:
-        """Get all from memory storage"""
+        """
+        Get all analysis results, sorted by date.
+        This is the function that was missing.
+        """
+        # Data is already in memory, just sort and return it
         return sorted(self.memory_storage, key=lambda x: x.get('created_at', ''), reverse=True)
     
     def delete_analysis(self, id: str) -> bool:
-        """Delete analysis by ID"""
-        if self.use_supabase:
-            try:
-                result = self.supabase.table('analyses').delete().eq('id', id).execute()
-                return len(result.data) > 0 if result.data else False
-            except Exception as e:
-                print(f"Error deleting from Supabase: {str(e)}")
-                return self._delete_from_memory(id)
-        else:
-            return self._delete_from_memory(id)
-    
-    def _delete_from_memory(self, id: str) -> bool:
-        """Delete from memory storage"""
+        """Delete analysis by ID from the JSON database."""
         initial_len = len(self.memory_storage)
         self.memory_storage = [item for item in self.memory_storage if item.get('id') != id]
-        return len(self.memory_storage) < initial_len
-
+        
+        # If an item was actually deleted, save the change
+        if len(self.memory_storage) < initial_len:
+            self._save_db()
+            return True
+        return False

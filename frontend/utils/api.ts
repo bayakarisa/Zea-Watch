@@ -23,13 +23,28 @@ export const analyzeImage = async (imageFile: File): Promise<AnalysisResult> => 
   const formData = new FormData()
   formData.append('image', imageFile)
 
-  const response = await api.post<AnalysisResult>('/api/analyze', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  })
+  try {
+    const response = await api.post<AnalysisResult>('/api/analyze', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      timeout: 60000, // 60 second timeout for model loading
+    })
 
-  return response.data
+    return response.data
+  } catch (error: any) {
+    if (error.response) {
+      // Server responded with error
+      const errorMessage = error.response.data?.error || error.response.data?.message || 'Failed to analyze image'
+      throw new Error(errorMessage)
+    } else if (error.request) {
+      // Request made but no response
+      throw new Error('No response from server. Please check if backend is running.')
+    } else {
+      // Error setting up request
+      throw new Error(error.message || 'Failed to analyze image')
+    }
+  }
 }
 
 export const getHistory = async (): Promise<AnalysisResult[]> => {

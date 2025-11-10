@@ -51,3 +51,15 @@ backend/models/*.pkl
 *.log
 logs/
 
+<<<<<<< HEAD
+# Python virtual environments
+.venv/
+backend/.venv/
+
+# Python cache
+__pycache__/
+
+# Node.js
+node_modules/
+.next/
+

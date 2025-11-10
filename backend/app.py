@@ -11,7 +11,7 @@ CORS(app)
 # Configuration
 app.config['UPLOAD_FOLDER'] = os.getenv('UPLOAD_FOLDER', './static/uploads')
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB max file size
-app.config['MODEL_PATH'] = os.getenv('MODEL_PATH', './models/hybrid_model.h5')
+app.config['MODEL_PATH'] = os.getenv('MODEL_PATH', './models/hybrid_model.pth')
 
 # Create upload directory if it doesn't exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
