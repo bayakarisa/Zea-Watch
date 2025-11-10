@@ -3,9 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
 import { Leaf, Trash2 } from 'lucide-react'
-import { getHistory, deleteHistoryItem, AnalysisResult, API_URL } from '@/utils/api'
+import { getHistory, deleteHistoryItem, AnalysisResult } from '@/utils/api'
 import { Button } from './ui/button'
-import Image from 'next/image'
 
 export const ScanHistoryCard: React.FC = () => {
   const [history, setHistory] = useState<AnalysisResult[]>([])
@@ -68,22 +67,22 @@ export const ScanHistoryCard: React.FC = () => {
               >
                 <div className="flex gap-4">
                   {item.image_url && (
-                    <div className="relative w-24 h-24 rounded-md overflow-hidden flex-shrink-0">
-                      <Image
-                        src={item.image_url.startsWith('http') ? item.image_url : `${API_URL}${item.image_url}`}
+                    <div className="relative w-24 h-24 rounded-md overflow-hidden flex-shrink-0 bg-muted">
+                      <img
+                        src={item.image_url}
                         alt="Maize leaf"
-                        fill
-                        className="object-cover"
-                        unoptimized
+                        className="w-full h-full object-cover"
                       />
                     </div>
                   )}
                   <div className="flex-1">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h3 className="font-semibold text-gray-800">{item.disease}</h3>
-                        <p className="text-sm text-gray-500">
-                          Confidence: {(item.confidence * 100).toFixed(1)}%
+                        <h3 className="font-semibold text-foreground">{item.disease}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Confidence: {typeof item.confidence === 'number' 
+                            ? (item.confidence <= 1 ? (item.confidence * 100).toFixed(1) : item.confidence.toFixed(1))
+                            : item.confidence}%
                         </p>
                       </div>
                       <Button
