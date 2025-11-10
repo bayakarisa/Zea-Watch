@@ -51,7 +51,18 @@ export const UploadCard: React.FC<UploadCardProps> = ({ onAnalysisComplete }) =>
     setError(null)
     
     try {
-      const result = await analyzeImage(selectedFile)
+      // Try to get GPS location (optional, won't fail if denied)
+      let locationData: { latitude: number; longitude: number; accuracy?: number } | undefined
+      try {
+        const { getCurrentLocation } = await import('@/utils/api')
+        locationData = await getCurrentLocation()
+      } catch (locError) {
+        // Location is optional, continue without it
+        console.log('Location not available:', locError)
+      }
+
+      const { analyzeImage } = await import('@/utils/api')
+      const result = await analyzeImage(selectedFile, locationData)
       onAnalysisComplete?.(result)
       // Clear preview after successful analysis
       setPreviewImage(null)

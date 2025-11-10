@@ -1,16 +1,35 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Header } from '@/components/Header'
+import React, { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { Navbar } from '@/components/Navbar'
+import { Footer } from '@/components/Footer'
 import { UploadCard } from '@/components/UploadCard'
 import { ScanHistoryCard } from '@/components/ScanHistoryCard'
 import { AnalysisResult as AnalysisResultComponent } from '@/components/AnalysisResult'
-import { Leaf } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Leaf, History } from 'lucide-react'
 import { AnalysisResult } from '@/utils/api'
+import { supabase } from '@/lib/supabaseClient'
 
 export default function Home() {
+  const router = useRouter()
   const [refreshKey, setRefreshKey] = useState(0)
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null)
+  const [user, setUser] = useState<any>(null)
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   const handleAnalysisComplete = (result: AnalysisResult) => {
     setAnalysisResult(result)
@@ -19,22 +38,19 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f0f7f0]">
-      <Header />
+    <div className="min-h-screen flex flex-col bg-background">
+      <Navbar />
       
-      <main className="container mx-auto px-6 py-8 max-w-7xl">
-        {/* Welcome Section */}
-        <div className="bg-[#e8f5e9] rounded-xl p-8 mb-8 shadow-sm">
+      <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
+        {/* Hero Section */}
+        <div className="bg-card rounded-xl p-8 mb-8 shadow-sm border">
           <div className="flex items-start gap-3 mb-4">
-            <Leaf className="h-6 w-6 text-[#2e7d32] flex-shrink-0 mt-1" />
-            <div>
-              <h2 className="text-3xl font-bold text-[#1e5f2e] mb-2">
-                Welcome to ZeaWatch!
-              </h2>
-              <p className="text-xl text-[#1e5f2e] mb-4 font-medium">
-                AI-Powered Maize Disease Detection
-              </p>
-              <p className="text-gray-700 leading-relaxed">
+            <Leaf className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-foreground mb-2">
+                Detect maize leaf diseases instantly using AI
+              </h1>
+              <p className="text-lg text-muted-foreground mb-4">
                 Empower your farming with cutting-edge AI. Simply upload or capture a photo of a maize leaf, 
                 and ZeaWatch will intelligently analyze it for potential diseases. Get instant, actionable insights, 
                 detailed descriptions, and tailored recommendations to safeguard your harvest and promote crop health.
@@ -53,17 +69,32 @@ export default function Home() {
           </div>
         )}
 
-        {/* Main Content Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Upload/Capture Section */}
+        <div className="mb-8">
           <UploadCard onAnalysisComplete={handleAnalysisComplete} />
-          <ScanHistoryCard key={refreshKey} />
         </div>
+
+        {/* View History Button (only visible if logged in) */}
+        {user && (
+          <div className="mb-8 flex justify-center">
+            <Button asChild variant="outline" size="lg">
+              <Link href="/history" className="flex items-center gap-2">
+                <History className="h-4 w-4" />
+                View My History
+              </Link>
+            </Button>
+          </div>
+        )}
+
+        {/* Recent History (Guest Mode) */}
+        {!user && (
+          <div className="mb-8">
+            <ScanHistoryCard key={refreshKey} />
+          </div>
+        )}
       </main>
 
-      {/* Footer */}
-      <footer className="mt-16 py-6 text-center text-sm text-gray-600">
-        <p>© 2025 ZeaWatch. Built for healthier crops.</p>
-      </footer>
+      <Footer />
     </div>
   )
 }
