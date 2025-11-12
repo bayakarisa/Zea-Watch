@@ -2,9 +2,12 @@
 
 import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
-import { Leaf, Trash2 } from 'lucide-react'
+import { Leaf, Trash2, CheckCircle2, AlertTriangle, XOctagon } from 'lucide-react'
 import { getHistory, deleteHistoryItem, AnalysisResult, API_URL } from '@/utils/api'
 import { Button } from './ui/button'
+import { ProgressBar } from './ui/ProgressBar'
+import { Badge } from './ui/Badge'
+import { Tooltip } from './ui/tooltip'
 import Image from 'next/image'
 
 export const ScanHistoryCard: React.FC = () => {
@@ -82,9 +85,62 @@ export const ScanHistoryCard: React.FC = () => {
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <h3 className="font-semibold text-gray-800">{item.disease}</h3>
-                        <p className="text-sm text-gray-500">
-                          Confidence: {(item.confidence * 100).toFixed(1)}%
-                        </p>
+                        {(() => {
+                          const confidencePercent = Math.round(item.confidence * 100)
+                          let confidenceLevel: 'high' | 'moderate' | 'low'
+                          let color: 'green' | 'yellow' | 'red'
+                          let icon = null
+                          let explanation = ''
+                          if (confidencePercent >= 80) {
+                            confidenceLevel = 'high'
+                            color = 'green'
+                            icon = <CheckCircle2 className="h-4 w-4 text-green-600" aria-label="High confidence" />
+                            explanation = "We're very confident about this diagnosis"
+                          } else if (confidencePercent >= 50) {
+                            confidenceLevel = 'moderate'
+                            color = 'yellow'
+                            icon = <AlertTriangle className="h-4 w-4 text-yellow-500" aria-label="Moderate confidence" />
+                            explanation = "This diagnosis is likely, but consider getting a second opinion"
+                          } else {
+                            confidenceLevel = 'low'
+                            color = 'red'
+                            icon = <XOctagon className="h-4 w-4 text-red-600" aria-label="Low confidence" />
+                            explanation = "Uncertain diagnosis. We recommend consulting an expert"
+                          }
+                          return (
+                            <Tooltip content="Confidence indicates how certain the AI is about this diagnosis">
+                              <div className="flex items-center gap-2 mt-1" tabIndex={0} aria-label={`Confidence: ${confidencePercent}% (${confidenceLevel})`}>
+                                <Badge color={color} className="text-xs px-2 py-0.5">
+                                  {icon}
+                                  <span className="ml-1 font-semibold capitalize">{confidenceLevel}</span>
+                                </Badge>
+                                <span className="text-gray-700 font-medium text-xs">{confidencePercent}%</span>
+                              </div>
+                            </Tooltip>
+                          )
+                        })()}
+                        {(() => {
+                          const confidencePercent = Math.round(item.confidence * 100)
+                          let color: 'green' | 'yellow' | 'red'
+                          if (confidencePercent >= 80) color = 'green'
+                          else if (confidencePercent >= 50) color = 'yellow'
+                          else color = 'red'
+                          return (
+                            <div className="mt-1" aria-label={`Confidence progress bar: ${confidencePercent}%`}>
+                              <ProgressBar value={confidencePercent} color={color} />
+                            </div>
+                          )
+                        })()}
+                        {(() => {
+                          const confidencePercent = Math.round(item.confidence * 100)
+                          let explanation = ''
+                          if (confidencePercent >= 80) explanation = "We're very confident about this diagnosis"
+                          else if (confidencePercent >= 50) explanation = "This diagnosis is likely, but consider getting a second opinion"
+                          else explanation = "Uncertain diagnosis. We recommend consulting an expert"
+                          return (
+                            <div className="mt-1 text-xs text-gray-700" aria-live="polite">{explanation}</div>
+                          )
+                        })()}
                       </div>
                       <Button
                         variant="ghost"
