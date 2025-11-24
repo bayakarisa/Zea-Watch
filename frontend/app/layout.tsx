@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import '../styles/globals.css'
+import { AppProviders } from '@/components/AppProviders'
+import { Toaster } from 'sonner'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,7 +26,10 @@ export default function RootLayout({
           crossOrigin=""
         />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <AppProviders>{children}</AppProviders>
+        <Toaster />
+      </body>
     </html>
   )
 }

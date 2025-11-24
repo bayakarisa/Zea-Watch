@@ -97,5 +97,23 @@
         "image_url": "/static/uploads/Corn_Common_Rust_1064.JPG",
         "created_at": "2025-11-08T21:33:36.950360",
         "id": "11"
+    },
+    {
+        "disease": "Healthy",
+        "confidence": 0.85,
+        "description": "This maize leaf appears healthy, characterized by its vibrant, uniform green color and the absence of spots, lesions, or signs of stress. To keep the crop healthy, a farmer should continue to monitor for this consistent coloration and ensure leaves remain free from any discoloration, streaks, or physical damage from pests.",
+        "recommendation": "*   **Balanced Nutrition:** Ensure the soil has adequate nutrients, particularly nitrogen, by conducting soil tests and applying fertilizer as needed. A balanced diet is crucial for strong, disease-resistant plants.\n*   **Proper Water Management:** Provide consistent and adequate water, especially during critical growth stages. Avoid both drought stress and waterlogged soil, as both can make the crop more susceptible to diseases.\n*   **Scouting and Pest Control:** Regularly walk through the fields to scout for early signs of pests (like aphids or armyworms) and diseases. Early detection allows for timely and more effective management.\n*   **Good Field Sanitation:** Control weeds, which compete for resources and can host pests and diseases. Ensure proper plant spacing to promote good air circulation, which helps reduce the humidity that fungal diseases thrive in.",
+        "image_url": "/static/uploads/Corn_Health_938.jpg",
+        "created_at": "2025-11-12T20:11:29.720602",
+        "id": "12"
+    },
+    {
+        "disease": "Healthy",
+        "confidence": 0.85,
+        "description": "Based on the visual evidence, the initial classification appears to be incorrect. The leaf shows clear signs of a fungal disease. Here is a response that addresses this discrepancy and provides appropriate recommendations.\n\n Although this maize leaf is largely green, it is showing early signs of a fungal disease, most likely Common Rust, indicated by the small, raised, reddish-brown pustules. A truly healthy leaf would have a uniform, vibrant green color and be completely free of such spots, lesions, or discoloration. Farmers should monitor their fields for these symptoms, as early detection is crucial for effective management.",
+        "recommendation": "*   **Scout Fields Regularly:** Routinely inspect crops for the first appearance of disease symptoms, especially after periods of high humidity and moderate temperatures. Early detection allows for timely intervention before the disease can spread widely and impact yield.\n*   **Plant Resistant Hybrids:** Whenever possible, select maize varieties that are known to have good genetic resistance to common foliar diseases in your region, such as Common Rust and Gray Leaf Spot.\n*   **Manage Crop Residue:** Fungal pathogens can survive on infected crop residue from the previous season. Practice tillage or other residue management techniques to reduce the amount of inoculum available to infect the new crop.\n*   **Consider Fungicide Application:** If scouting reveals that the disease is present on a majority of plants and weather conditions favor its spread, a timely foliar fungicide application may be economically beneficial to protect the plant's yield potential. Consult with a local agricultural extension agent for advice on timing and product selection.",
+        "image_url": "/static/uploads/Corn_Common_Rust_12685.jpg",
+        "created_at": "2025-11-18T19:29:51.886313",
+        "id": "13"
     }
 ]

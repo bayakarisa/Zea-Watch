@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Leaf, User, LogOut, Menu, X } from 'lucide-react'
+import { Leaf, User, LogOut, Menu, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -12,36 +12,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { supabase } from '@/lib/supabaseClient'
-import { User as SupabaseUser } from '@supabase/supabase-js'
+import { useAuth } from '@/context/AuthContext'
 
 export const Navbar: React.FC = () => {
-  const [user, setUser] = useState<SupabaseUser | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { user, isLoading, logout } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
-
-  useEffect(() => {
-    // Get initial user
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user)
-      setLoading(false)
-    })
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/')
-    router.refresh()
-  }
 
   const isActive = (path: string) => pathname === path
 
@@ -62,15 +39,14 @@ export const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center gap-6">
             <Link
               href="/about"
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                isActive('/about') ? 'text-primary' : 'text-muted-foreground'
-              }`}
+              className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/about') ? 'text-primary' : 'text-muted-foreground'
+                }`}
             >
               About Us
             </Link>
 
-            {loading ? (
-              <div className="h-9 w-20 animate-pulse bg-muted rounded-md"></div>
+            {isLoading ? (
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
             ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -102,7 +78,13 @@ export const Navbar: React.FC = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
+                  <DropdownMenuItem
+                    onClick={async () => {
+                      logout()
+                      router.push('/')
+                    }}
+                    className="cursor-pointer text-destructive"
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign Out
                   </DropdownMenuItem>
@@ -111,7 +93,7 @@ export const Navbar: React.FC = () => {
             ) : (
               <div className="flex items-center gap-3">
                 <Button variant="ghost" asChild>
-                  <Link href="/signin">Sign In</Link>
+                  <Link href="/login">Sign In</Link>
                 </Button>
                 <Button asChild>
                   <Link href="/signup">Sign Up</Link>
@@ -173,9 +155,10 @@ export const Navbar: React.FC = () => {
                   Map
                 </Link>
                 <button
-                  onClick={() => {
-                    handleSignOut()
+                  onClick={async () => {
+                    logout()
                     setMobileMenuOpen(false)
+                    router.push('/')
                   }}
                   className="block w-full text-left px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10"
                 >
@@ -185,7 +168,7 @@ export const Navbar: React.FC = () => {
             ) : (
               <div className="flex flex-col gap-2 px-3">
                 <Button variant="ghost" asChild>
-                  <Link href="/signin" onClick={() => setMobileMenuOpen(false)}>
+                  <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
                     Sign In
                   </Link>
                 </Button>

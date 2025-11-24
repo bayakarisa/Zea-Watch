@@ -14,9 +14,12 @@ import { signIn } from '@/lib/auth'
 import { migrateGuestAnalyses } from '@/utils/api'
 import { AlertCircle, Loader2, CheckCircle2 } from 'lucide-react'
 
+import { useAuth } from '@/context/AuthContext'
+
 export default function SignInPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { login } = useAuth()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -46,20 +49,30 @@ export default function SignInPage() {
     setLoading(true)
 
     try {
-      const { data } = await signIn(formData.email, formData.password, formData.rememberMe)
-      
-      // If user signs in, migrate guest analyses
-      if (data?.user?.id) {
-        try {
-          await migrateGuestAnalyses(data.user.id)
-        } catch (migrateError) {
-          console.error('Error migrating guest analyses:', migrateError)
-          // Don't fail signin if migration fails
+      const user = await signIn(formData.email, formData.password, formData.rememberMe)
+
+      // Get token that signIn stored in localStorage
+      const token = localStorage.getItem('auth_token')
+
+      if (user && token) {
+        // Update AuthContext (which also sets auth_user in localStorage)
+        login(token, user)
+
+        // If user signs in, migrate guest analyses
+        if (user.id) {
+          try {
+            await migrateGuestAnalyses(user.id)
+          } catch (migrateError) {
+            console.error('Error migrating guest analyses:', migrateError)
+            // Don't fail signin if migration fails
+          }
         }
+
+        router.push('/dashboard') // Redirect to dashboard instead of root for better UX
+        router.refresh()
+      } else {
+        throw new Error('Login failed: Missing token or user data')
       }
-      
-      router.push('/')
-      router.refresh()
     } catch (err: any) {
       setError(err.message || 'Failed to sign in')
     } finally {

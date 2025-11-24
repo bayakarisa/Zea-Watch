@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { supabase } from '@/lib/supabaseClient'
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+// Force 127.0.0.1 to avoid localhost IPv6 issues
+const API_URL = 'http://127.0.0.1:5000/api'
 
 const api = axios.create({
   baseURL: API_URL,
@@ -94,6 +95,9 @@ export const uploadImageToStorage = async (
 /**
  * Analyze image using backend API
  */
+/**
+ * Analyze image using backend API
+ */
 export const analyzeImage = async (
   imageFile: File,
   locationData?: LocationData,
@@ -102,71 +106,30 @@ export const analyzeImage = async (
   const formData = new FormData()
   formData.append('image', imageFile)
 
+  // Get auth token from local storage
+  const token = localStorage.getItem('auth_token')
+  const headers: Record<string, string> = {
+    'Content-Type': 'multipart/form-data',
+  }
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`
+  }
+
   try {
     // Call backend API for analysis
-    const response = await api.post<AnalysisResult>('/api/analyze', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+    const response = await api.post<AnalysisResult>('/analyze', formData, {
+      headers,
       timeout: 60000, // 60 second timeout for model loading
     })
 
     const result = response.data
 
-    // Get current user
-    const { data: { user } } = await supabase.auth.getUser()
-
-    // Upload image to Supabase Storage
-    let imageUrl: string | undefined
-    try {
-      imageUrl = await uploadImageToStorage(imageFile, user?.id || null)
-    } catch (error) {
-      console.error('Failed to upload image, continuing without storage:', error)
-    }
-
-    // Save to database if user is logged in
-    if (user) {
+    // If user is guest, save to local storage
+    // Backend handles saving for authenticated users
+    if (!token) {
       try {
-        // Convert confidence from 0-1 to 0-100 if needed
-        const confidenceValue =
-          result.confidence <= 1 ? result.confidence * 100 : result.confidence
-
-        const { data: analysisData, error: dbError } = await supabase
-          .from('analyses')
-          .insert({
-            user_id: user.id,
-            disease: result.disease,
-            confidence: confidenceValue,
-            description: result.description,
-            recommendation: result.recommendation,
-            image_url: imageUrl,
-            latitude: locationData?.latitude || null,
-            longitude: locationData?.longitude || null,
-            field_name: fieldName || null,
-            location_accuracy: locationData?.accuracy
-              ? `${locationData.accuracy.toFixed(0)}m`
-              : null,
-          })
-          .select()
-          .single()
-
-        if (dbError) {
-          console.error('Error saving analysis to database:', dbError)
-        } else {
-          return {
-            ...result,
-            ...analysisData,
-            confidence: confidenceValue,
-            image_url: imageUrl,
-          }
-        }
-      } catch (error) {
-        console.error('Error saving analysis:', error)
-      }
-    } else {
-      // Save to local storage for guest mode
-      try {
-        // Convert confidence for guest mode too
+        // Convert confidence for guest mode
         const confidenceValue =
           result.confidence <= 1 ? result.confidence * 100 : result.confidence
 
@@ -176,7 +139,6 @@ export const analyzeImage = async (
         guestAnalyses.push({
           ...result,
           confidence: confidenceValue,
-          image_url: imageUrl,
           latitude: locationData?.latitude || null,
           longitude: locationData?.longitude || null,
           field_name: fieldName || null,
@@ -192,7 +154,7 @@ export const analyzeImage = async (
     const confidenceValue =
       result.confidence <= 1 ? result.confidence * 100 : result.confidence
 
-    return { ...result, confidence: confidenceValue, image_url: imageUrl }
+    return { ...result, confidence: confidenceValue }
   } catch (error: any) {
     if (error.response) {
       // Server responded with error
@@ -200,6 +162,7 @@ export const analyzeImage = async (
         error.response.data?.error ||
         error.response.data?.message ||
         'Failed to analyze image'
+      console.error(`API Error (${error.config?.url}):`, errorMessage)
       throw new Error(errorMessage)
     } else if (error.request) {
       // Request made but no response

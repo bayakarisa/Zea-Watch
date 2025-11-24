@@ -1,131 +1,109 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { supabase } from '@/lib/supabaseClient'
-import {
-  PieChart,
-  Pie,
-  Cell,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-} from 'recharts'
-import { Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Loader2, UploadCloud, Trash2, FileText, Sparkles } from 'lucide-react'
+import { useAuth } from '@/context/AuthContext'
+import { deleteUpload, fetchRecommendations, fetchUploads, uploadFile } from '@/lib/dashboardApi'
 
-interface Analysis {
+interface UploadRecord {
   id: string
-  disease: string
-  confidence: number
+  filename: string
+  storage_path: string
   created_at: string
-  latitude?: number
-  longitude?: number
-  field_name?: string
+  file_size?: number
+  mime_type?: string
+  metadata?: Record<string, any>
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d']
+interface RecommendationRecord {
+  id: string
+  recommendation_type: string
+  summary?: string
+  content?: Record<string, any>
+  score?: number
+  created_at: string
+}
 
 export default function DashboardPage() {
   const router = useRouter()
-  const [user, setUser] = useState<any>(null)
-  const [analyses, setAnalyses] = useState<Analysis[]>([])
+  const { user, isLoading: authLoading } = useAuth()
+  const [uploads, setUploads] = useState<UploadRecord[]>([])
+  const [recommendations, setRecommendations] = useState<RecommendationRecord[]>([])
   const [loading, setLoading] = useState(true)
+  const [uploading, setUploading] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  const formattedUserName = useMemo(() => {
+    if (!user) return ''
+    return user.name || user.email
+  }, [user])
 
   useEffect(() => {
-    const fetchData = async () => {
-      const { data: { user: authUser } } = await supabase.auth.getUser()
-      if (!authUser) {
+    const loadData = async () => {
+      if (authLoading) return
+      if (!user) {
         router.push('/signin')
         return
       }
 
-      setUser(authUser)
-
-      // Fetch analyses
-      const { data: analysesData, error } = await supabase
-        .from('analyses')
-        .select('*')
-        .eq('user_id', authUser.id)
-        .order('created_at', { ascending: false })
-
-      if (error) {
-        console.error('Error fetching analyses:', error)
-      } else {
-        setAnalyses(analysesData || [])
+      try {
+        setLoading(true)
+        const [uploadRes, recommendationRes] = await Promise.all([fetchUploads(), fetchRecommendations()])
+        setUploads(uploadRes?.uploads || [])
+        setRecommendations(recommendationRes?.recommendations || [])
+      } catch (err: any) {
+        console.error(err)
+        setError(err.message)
+      } finally {
+        setLoading(false)
       }
-
-      setLoading(false)
     }
 
-    fetchData()
-  }, [router])
+    loadData()
+  }, [user, authLoading, router])
 
-  // Calculate disease frequency
-  const diseaseFrequency = analyses.reduce((acc, analysis) => {
-    acc[analysis.disease] = (acc[analysis.disease] || 0) + 1
-    return acc
-  }, {} as Record<string, number>)
-
-  const diseaseChartData = Object.entries(diseaseFrequency).map(([name, value]) => ({
-    name,
-    value,
-  }))
-
-  // Calculate confidence trends (by month)
-  const confidenceByMonth = analyses.reduce((acc, analysis) => {
-    const date = new Date(analysis.created_at)
-    const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
-    if (!acc[month]) {
-      acc[month] = { month, total: 0, count: 0, avg: 0 }
+  const handleUpload = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (!file) {
+      setError('Choose a file to upload')
+      return
     }
-    acc[month].total += analysis.confidence
-    acc[month].count += 1
-    acc[month].avg = acc[month].total / acc[month].count
-    return acc
-  }, {} as Record<string, { month: string; total: number; count: number; avg: number }>)
+    try {
+      setUploading(true)
+      setError(null)
+      const formData = new FormData()
+      formData.append('file', file)
+      await uploadFile(formData)
+      setFile(null)
+      const refresh = await fetchUploads()
+      setUploads(refresh?.uploads || [])
+    } catch (err: any) {
+      console.error(err)
+      setError(err.message)
+    } finally {
+      setUploading(false)
+    }
+  }
 
-  const confidenceTrendData = Object.values(confidenceByMonth)
-    .sort((a, b) => a.month.localeCompare(b.month))
-    .map((item) => ({ month: item.month, confidence: Number(item.avg.toFixed(2)) }))
+  const handleDelete = async (id: string) => {
+    if (!confirm('Delete this upload?')) return
+    try {
+      await deleteUpload(id)
+      setUploads((prev) => prev.filter((upload) => upload.id !== id))
+    } catch (err: any) {
+      setError(err.message)
+    }
+  }
 
-  // Calculate most affected fields
-  const fieldFrequency = analyses
-    .filter((a) => a.field_name)
-    .reduce((acc, analysis) => {
-      const field = analysis.field_name || 'Unknown'
-      acc[field] = (acc[field] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
-
-  const fieldChartData = Object.entries(fieldFrequency)
-    .map(([name, value]) => ({ name, count: value }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5)
-
-  // Seasonal patterns (by month)
-  const seasonalData = analyses.reduce((acc, analysis) => {
-    const date = new Date(analysis.created_at)
-    const month = date.toLocaleString('default', { month: 'short' })
-    acc[month] = (acc[month] || 0) + 1
-    return acc
-  }, {} as Record<string, number>)
-
-  const seasonalChartData = Object.entries(seasonalData).map(([name, value]) => ({
-    name,
-    count: value,
-  }))
-
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen flex flex-col">
         <Navbar />
@@ -140,152 +118,162 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-7xl">
-        <h1 className="text-4xl font-bold text-foreground mb-8">Analytics Dashboard</h1>
+      <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-6xl space-y-8">
+        <div className="flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">Welcome back</p>
+          <h1 className="text-3xl font-bold text-foreground">{formattedUserName}</h1>
+          <p className="text-muted-foreground">
+            Track your uploads, view personalized recommendations, and manage your ZeaWatch account.
+          </p>
+        </div>
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {error && (
+          <div className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           <Card>
             <CardHeader>
-              <CardTitle>Total Analyses</CardTitle>
+              <CardTitle>Uploads</CardTitle>
+              <CardDescription>Total files you have uploaded</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">{analyses.length}</div>
+              <p className="text-3xl font-bold">{uploads.length}</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>Unique Diseases</CardTitle>
+              <CardTitle>Recommendations</CardTitle>
+              <CardDescription>Insights generated for you</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">{Object.keys(diseaseFrequency).length}</div>
+              <p className="text-3xl font-bold">{recommendations.length}</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>Average Confidence</CardTitle>
+              <CardTitle>Account role</CardTitle>
+              <CardDescription>Your access level</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">
-                {analyses.length > 0
-                  ? (
-                      analyses.reduce((sum, a) => sum + a.confidence, 0) / analyses.length
-                    ).toFixed(1)
-                  : '0'}
-                %
-              </div>
+              <Badge variant="secondary" className="text-base capitalize">
+                {user?.role || 'user'}
+              </Badge>
             </CardContent>
           </Card>
         </div>
 
-        {/* Disease Frequency Chart */}
-        <Card className="mb-8">
+        <Card id="uploads">
           <CardHeader>
-            <CardTitle>Disease Frequency</CardTitle>
-            <CardDescription>Distribution of detected diseases</CardDescription>
+            <CardTitle>Upload new data</CardTitle>
+            <CardDescription>Attach new imagery or files for your agronomic records.</CardDescription>
           </CardHeader>
           <CardContent>
-            {diseaseChartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={diseaseChartData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
+            <form className="flex flex-col gap-4 md:flex-row md:items-center" onSubmit={handleUpload}>
+              <Input
+                type="file"
+                accept="image/*,.zip,.pdf"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                className="flex-1"
+              />
+              <Button type="submit" disabled={uploading}>
+                {uploading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <UploadCloud className="mr-2 h-4 w-4" />
+                    Upload file
+                  </>
+                )}
+              </Button>
+            </form>
+            <p className="mt-2 text-xs text-muted-foreground">Max size 5MB. Accepted formats: images, PDF, ZIP.</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>My uploads</CardTitle>
+            <CardDescription>Only you (and admins) can see these files.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {uploads.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No uploads yet. Start by adding a file above.</p>
+            ) : (
+              <div className="space-y-3">
+                {uploads.map((upload) => (
+                  <div
+                    key={upload.id}
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-md border p-4"
                   >
-                    {diseaseChartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            ) : (
-              <p className="text-center text-muted-foreground py-8">
-                No data available. Start analyzing leaves to see your statistics.
-              </p>
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-6 w-6 text-muted-foreground" />
+                      <div>
+                        <p className="font-medium">{upload.filename}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(upload.created_at).toLocaleString()} ·{' '}
+                          {upload.file_size ? `${(upload.file_size / 1024).toFixed(1)} KB` : 'size unknown'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Button variant="outline" size="sm" asChild>
+                        <a href={upload.storage_path} target="_blank" rel="noopener noreferrer">
+                          View
+                        </a>
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(upload.id)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Confidence Trend */}
-        <Card className="mb-8">
+        <Card id="recommendations">
           <CardHeader>
-            <CardTitle>Confidence Trend</CardTitle>
-            <CardDescription>Average confidence over time</CardDescription>
+            <CardTitle>Recommendations</CardTitle>
+            <CardDescription>Personalized insights generated for your farm.</CardDescription>
           </CardHeader>
-          <CardContent>
-            {confidenceTrendData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={confidenceTrendData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis domain={[0, 100]} />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="confidence" stroke="#8884d8" strokeWidth={2} />
-                </LineChart>
-              </ResponsiveContainer>
+          <CardContent className="space-y-4">
+            {recommendations.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No recommendations available yet.</p>
             ) : (
-              <p className="text-center text-muted-foreground py-8">
-                No data available. Start analyzing leaves to see trends.
-              </p>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {recommendations.map((rec) => (
+                  <div key={rec.id} className="rounded-md border p-4 shadow-sm">
+                    <div className="mb-2 flex items-center gap-2">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                      <p className="text-sm font-semibold capitalize">{rec.recommendation_type}</p>
+                      {rec.score !== undefined && (
+                        <Badge variant="outline">Score: {Number(rec.score).toFixed(1)}</Badge>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {rec.summary || rec.content?.message || 'See detailed content below.'}
+                    </p>
+                    {rec.content && (
+                      <pre className="mt-3 max-h-40 overflow-auto rounded bg-muted/50 p-2 text-xs">
+                        {JSON.stringify(rec.content, null, 2)}
+                      </pre>
+                    )}
+                    <p className="mt-3 text-xs text-muted-foreground">
+                      Generated {new Date(rec.created_at).toLocaleString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
             )}
           </CardContent>
         </Card>
-
-        {/* Seasonal Patterns */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Seasonal Patterns</CardTitle>
-            <CardDescription>Analysis frequency by month</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {seasonalChartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={seasonalChartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="count" fill="#8884d8" />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <p className="text-center text-muted-foreground py-8">
-                No data available. Start analyzing leaves to see patterns.
-              </p>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Most Affected Fields */}
-        {fieldChartData.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Most Affected Fields</CardTitle>
-              <CardDescription>Fields with the most disease detections</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={fieldChartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="count" fill="#82ca9d" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        )}
       </main>
       <Footer />
     </div>

@@ -22,6 +22,7 @@ import { Loader2, Share2, Download, ExternalLink, X, Filter, Calendar } from 'lu
 import Image from 'next/image'
 import Papa from 'papaparse'
 import jsPDF from 'jspdf'
+import { useAuth } from '@/context/AuthContext'
 
 interface Analysis {
   id: string
@@ -37,7 +38,7 @@ interface Analysis {
 
 export default function HistoryPage() {
   const router = useRouter()
-  const [user, setUser] = useState<any>(null)
+  const { user, token: contextToken } = useAuth()
   const [analyses, setAnalyses] = useState<Analysis[]>([])
   const [filteredAnalyses, setFilteredAnalyses] = useState<Analysis[]>([])
   const [loading, setLoading] = useState(true)
@@ -53,32 +54,39 @@ export default function HistoryPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: { user: authUser } } = await supabase.auth.getUser()
-      if (!authUser) {
-        router.push('/signin')
-        return
-      }
+      if (!user) return
 
-      setUser(authUser)
+      try {
+        setLoading(true)
+        const token = contextToken || localStorage.getItem('auth_token')
+        const baseUrl = 'http://127.0.0.1:5000'
+        const res = await fetch(`${baseUrl}/api/history`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
 
-      const { data: analysesData, error } = await supabase
-        .from('analyses')
-        .select('*')
-        .eq('user_id', authUser.id)
-        .order('created_at', { ascending: false })
+        if (!res.ok) throw new Error('Failed to fetch history')
 
-      if (error) {
+        const data = await res.json()
+        setAnalyses(data || [])
+        setFilteredAnalyses(data || [])
+      } catch (error) {
         console.error('Error fetching analyses:', error)
-      } else {
-        setAnalyses(analysesData || [])
-        setFilteredAnalyses(analysesData || [])
+      } finally {
+        setLoading(false)
       }
-
-      setLoading(false)
     }
 
-    fetchData()
-  }, [router])
+    if (user) {
+      fetchData()
+    } else {
+      const token = localStorage.getItem('auth_token')
+      if (!token) {
+        router.push('/signin')
+      }
+    }
+  }, [user, contextToken, router])
 
   useEffect(() => {
     let filtered = [...analyses]

@@ -20,6 +20,8 @@
     "axios": "^1.6.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "i18next": "^23.7.16",
+    "i18next-browser-languagedetector": "^7.2.0",
     "jspdf": "^3.0.3",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.303.0",
@@ -27,8 +29,11 @@
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-i18next": "^14.0.0",
     "react-leaflet": "^4.2.1",
+    "react-markdown": "^10.1.0",
     "recharts": "^2.10.3",
+    "sonner": "^2.0.7",
     "swr": "^2.2.4",
     "tailwind-merge": "^2.2.0",
     "tailwindcss-animate": "^1.0.7"
@@ -36,6 +41,7 @@
   "devDependencies": {
     "@types/leaflet": "^1.9.8",
     "@types/node": "^20.10.6",
+    "@types/papaparse": "^5.5.0",
     "@types/react": "^18.2.46",
     "@types/react-dom": "^18.2.18",
     "autoprefixer": "^10.4.16",

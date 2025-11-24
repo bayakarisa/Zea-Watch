@@ -1,0 +1,55 @@
+Checking common models...
+--- ResNet50 ---
+conv1.weight
+bn1.weight
+bn1.bias
+bn1.running_mean
+bn1.running_var
+--- MobileNetV2 ---
+features.0.0.weight
+features.0.1.weight
+features.0.1.bias
+features.0.1.running_mean
+features.0.1.running_var
+MATCHES features.0.0.weight
+--- EfficientNet_B0 ---
+features.0.0.weight
+features.0.1.weight
+features.0.1.bias
+features.0.1.running_mean
+features.0.1.running_var
+MATCHES features.0.0.weight
+Has 'block' in keys
+Sample block key: features.1.0.block.0.0.weight
+--- EfficientNet_B1 ---
+features.0.0.weight
+features.0.1.weight
+features.0.1.bias
+features.0.1.running_mean
+features.0.1.running_var
+MATCHES features.0.0.weight
+Has 'block' in keys
+Sample block key: features.1.0.block.0.0.weight
+--- EfficientNet_V2_S ---
+features.0.0.weight
+features.0.1.weight
+features.0.1.bias
+features.0.1.running_mean
+features.0.1.running_var
+MATCHES features.0.0.weight
+Has 'block' in keys
+Sample block key: features.1.0.block.0.0.weight
+--- DenseNet121 ---
+features.conv0.weight
+features.norm0.weight
+features.norm0.bias
+features.norm0.running_mean
+features.norm0.running_var
+Has 'block' in keys
+Sample block key: features.denseblock1.denselayer1.norm1.weight
+--- VGG16 ---
+features.0.weight
+features.0.bias
+features.2.weight
+features.2.bias
+features.5.weight

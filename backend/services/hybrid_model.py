@@ -20,6 +20,7 @@ class HybridModel(nn.Module):
             'Gray Leaf Spot'
         ]
 
+        # 1. Load ViT Model
         try:
             self.vit_model = ViTForImageClassification.from_pretrained(
                 'google/vit-base-patch16-224',
@@ -30,11 +31,13 @@ class HybridModel(nn.Module):
             print(f"Warning: Could not load ViT model: {str(e)}")
             self.vit_model = None
 
+        # 2. Load ViT Processor
         try:
             self.vit_processor = ViTImageProcessor.from_pretrained('google/vit-base-patch16-224')
         except Exception:
             self.vit_processor = None
 
+        # 3. Define Transforms
         self.transform = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor(),
@@ -42,21 +45,42 @@ class HybridModel(nn.Module):
                                  std=[0.229, 0.224, 0.225])
         ])
 
+        # 4. Load EfficientNet B0 (CNN)
         model_path = os.getenv('MODEL_PATH', './models/hybrid_model.pth')
 
-        if not os.path.exists(model_path):
+        try:
+            # Load EfficientNet B0 (matches the saved model architecture)
+            self.cnn_model = models.efficientnet_b0(weights=None)
+            
+            # EfficientNet classifier is Sequential(Dropout, Linear)
+            # We replace the Linear layer (index 1)
+            num_ftrs = self.cnn_model.classifier[1].in_features
+            self.cnn_model.classifier[1] = nn.Linear(num_ftrs, len(self.disease_classes))
+            
+            if os.path.exists(model_path):
+                # Load state dict for the ENTIRE HybridModel (including cnn_model and vit_model)
+                state_dict = torch.load(model_path, map_location=self.device)
+                
+                # The saved model is a HybridModel state_dict (keys start with cnn_model... and vit_model...)
+                # So we load it into 'self', not 'self.cnn_model'
+                self.load_state_dict(state_dict)
+                print(f"✅ Successfully loaded HybridModel (EfficientNet+ViT) from {model_path}")
+            else:
+                print(f"Warning: Model file not found at {model_path}. Using initialized model (untrained).")
+                self.cnn_model = None
 
-        self.cnn_model.eval()
-        if self.vit_model:
-            self.vit_model.eval()
+        except Exception as e:
+            print(f"❌ Failed to load model: {str(e)}")
+            # Fallback to None so we don't crash, but predictions will be dummy
+            self.cnn_model = None
 
-        self.cnn_model.to(self.device)
+        if self.cnn_model:
+            self.cnn_model.to(self.device)
         if self.vit_model:
             self.vit_model.to(self.device)
 
 
     def forward(self, cnn_input, vit_input):
-
         cnn_logits = self.cnn_model(cnn_input)
         if self.vit_model:
             vit_outputs = self.vit_model(**vit_input)
@@ -67,17 +91,16 @@ class HybridModel(nn.Module):
             return cnn_logits
 
     def predict(self, image: Image.Image) -> tuple[str, float]:
-
         if self.cnn_model is None:
             return 'Healthy', 0.85
 
         self.eval()
-        self.cnn_model.eval()
+        if self.cnn_model:
+            self.cnn_model.eval()
         if self.vit_model:
             self.vit_model.eval()
 
         all_probs = []
-
 
         try:
             img_tensor = self.transform(image).unsqueeze(0).to(self.device)
