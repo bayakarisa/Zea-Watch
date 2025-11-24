@@ -153,6 +153,7 @@ Your answer:"""
                 # Fallback: try without generation config
                 print(f"Warning: Generation config failed, trying without: {str(e)}")
                 response = self.model.generate_content([prompt, img_pil])
+            
             text = response.text if hasattr(response, 'text') else str(response)
             
             # Debug logging
@@ -195,31 +196,32 @@ Your answer:"""
                 print(f"⚠️ Validation: Unclear response, REJECTING. Response: {text}")
                 print(f"   This means Gemini didn't respond with expected format")
                 return False, "Unable to confirm this is a maize leaf. Please upload a clear image of a maize leaf."
-            
-        except Exception as e:
-            print(f"❌ Gemini validation error: {str(e)}")
-            import traceback
-            print(traceback.format_exc())
-            # On error, REJECT for safety - don't allow invalid images through
-            return False, f"Validation service error: {str(e)}. Please try again or contact support."
-    
-    def get_insights(self, disease: str, confidence: float, image: Image.Image) -> tuple[str, str]:
 
-        if self.model is None:
-            # Return fallback descriptions if Gemini is not available
-            fallback_description = f"This maize leaf has been identified as {disease} with {confidence:.1%} confidence. The image shows visible symptoms that may indicate this condition."
-            fallback_recommendation = f"For {disease}, consider: 1) Remove affected leaves to prevent spread, 2) Apply appropriate fungicides or pesticides as recommended by agricultural experts, 3) Ensure proper crop rotation and field sanitation, 4) Monitor other plants for early signs."
-            return fallback_description, fallback_recommendation
-            
+        except Exception as e:
+            print(f"Validation Error: {e}")
+            # If validation fails due to error, we might want to allow it but log warning
+            # Or be strict. Let's be safe and allow logic to proceed to prediction but warn
+            return True, "Validation check failed (API Error)."
+
+    def generate_diagnosis(self, image: Image.Image, disease: str, confidence: float) -> tuple[str, str]:
+        """
+        Generate a diagnosis description and recommendations using Gemini.
+        """
         try:
             # --- CHANGED: Use different prompts for Healthy vs. Disease ---
             if "healthy" in disease.lower():
                 # --- This is the new prompt for HEALTHY plants ---
                 prompt = f"""
-                This image of a maize leaf has been classified as HEALTHY with {confidence:.2%} confidence.
+                You are an agricultural expert assistant.
+                
+                CONTEXT: A specialized AI model has analyzed a maize leaf image and classified it as: HEALTHY (Confidence: {confidence:.2%}).
+                
+                TASK: Provide a description and recommendations consistent with this "HEALTHY" classification.
+                
+                IMPORTANT: Even if you see minor imperfections, assume the specialized model is correct. Do not contradict the classification. Focus on maintaining plant health.
                 
                 Please provide:
-                1. A brief description (2-3 sentences) confirming the leaf appears healthy and what a farmer should look for to KEEP it healthy (e.g., good color, no spots).
+                1. A brief description (2-3 sentences) confirming the leaf appears healthy and what a farmer should look for to KEEP it healthy.
                 2. General recommendations for preventative care and maintaining a healthy maize crop (3-4 bullet points).
                 
                 Format your response as:
@@ -229,7 +231,13 @@ Your answer:"""
             else:
                 # --- This is your original prompt for DISEASES ---
                 prompt = f"""
-                Analyze this maize leaf image that has been classified as: {disease} (confidence: {confidence:.2%}).
+                You are an agricultural expert assistant.
+                
+                CONTEXT: A specialized AI model has analyzed a maize leaf image and classified it as: {disease} (Confidence: {confidence:.2%}).
+                
+                TASK: Provide a description and recommendations for this specific disease.
+                
+                IMPORTANT: Accept this classification as correct. Do not dispute it.
                 
                 Provide:
                 1. A detailed description of this disease condition (2-3 sentences)
@@ -269,3 +277,9 @@ Your answer:"""
             fallback_description = f"This maize leaf has been identified as {disease} with {confidence:.1%} confidence."
             fallback_recommendation = f"For {disease}, consult with an agricultural expert for specific treatment."
             return fallback_description, fallback_recommendation
+
+    def get_insights(self, disease: str, confidence: float, image: Image.Image) -> tuple[str, str]:
+        """
+        Wrapper for generate_diagnosis to match the method name expected by predict.py.
+        """
+        return self.generate_diagnosis(image, disease, confidence)

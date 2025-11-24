@@ -1,0 +1,122 @@
+{
+  "common": {
+    "appName": "ZeaWatch",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export"
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "createAccount": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "emailVerification": "Email Verification",
+    "verifyEmail": "Please verify your email address",
+    "emailVerified": "Email verified successfully!",
+    "checkEmail": "Please check your email for verification link",
+    "invalidCredentials": "Invalid email or password",
+    "emailNotVerified": "Please verify your email before logging in",
+    "passwordResetSent": "If the email exists, a password reset link has been sent",
+    "passwordResetSuccess": "Password reset successful"
+  },
+  "subscription": {
+    "tiers": {
+      "free": "Free Tier",
+      "premium1": "Premium Tier 1",
+      "premium2": "Premium Tier 2"
+    },
+    "pricing": {
+      "free": "0 KES/month",
+      "premium1": "2,000 KES/month",
+      "premium2": "5,000 KES/month"
+    },
+    "features": {
+      "free": "Basic disease detection accessible to all farmers",
+      "premium1": "Advanced insights, historical tracking, personalized recommendations, direct agronomist consultations",
+      "premium2": "All Premium Tier 1 features plus higher consult priority and additional analytics"
+    },
+    "current": "Current Subscription",
+    "upgrade": "Upgrade",
+    "downgrade": "Downgrade",
+    "cancel": "Cancel Subscription",
+    "purchase": "Purchase Subscription",
+    "active": "Active",
+    "canceled": "Canceled",
+    "pastDue": "Past Due"
+  },
+  "prediction": {
+    "title": "Disease Detection",
+    "upload": "Upload Image",
+    "camera": "Take Photo",
+    "analyzing": "Analyzing...",
+    "confidence": "Confidence",
+    "disease": "Disease",
+    "description": "Description",
+    "recommendation": "Recommendation",
+    "history": "Scan History",
+    "noHistory": "No scan history yet",
+    "deleteConfirm": "Are you sure you want to delete this scan?",
+    "tooltip": "Model confidence (calibrated) — values capped to 100%"
+  },
+  "admin": {
+    "dashboard": "Admin Dashboard",
+    "users": "Users",
+    "predictions": "Predictions",
+    "stats": "Statistics",
+    "totalUsers": "Total Users",
+    "verifiedUsers": "Verified Users",
+    "activeSubscriptions": "Active Subscriptions",
+    "totalPredictions": "Total Predictions",
+    "avgConfidence": "Average Confidence",
+    "userDetails": "User Details",
+    "registrationDate": "Registration Date",
+    "lastLogin": "Last Login",
+    "verifiedStatus": "Verified Status",
+    "subscriptionStatus": "Subscription Status",
+    "viewAllPredictions": "View All Predictions",
+    "exportData": "Export Data",
+    "updateSubscription": "Update Subscription",
+    "impersonate": "Impersonate User"
+  },
+  "errors": {
+    "validation": {
+      "required": "This field is required",
+      "email": "Invalid email format",
+      "passwordMin": "Password must be at least 8 characters",
+      "passwordStrength": "Password must contain at least one letter and one number"
+    },
+    "network": "Network error. Please check your connection.",
+    "server": "Server error. Please try again later.",
+    "unauthorized": "You are not authorized to perform this action",
+    "notFound": "Resource not found",
+    "generic": "An error occurred. Please try again."
+  },
+  "validation": {
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required",
+    "nameRequired": "Name is required",
+    "invalidEmail": "Invalid email format",
+    "weakPassword": "Password must be at least 8 characters with at least one letter and one number"
+  }
+}
+
+

@@ -1,0 +1,122 @@
+{
+  "common": {
+    "appName": "ZeaWatch",
+    "loading": "Inapakia...",
+    "error": "Kosa",
+    "success": "Mafanikio",
+    "cancel": "Ghairi",
+    "confirm": "Thibitisha",
+    "save": "Hifadhi",
+    "delete": "Futa",
+    "edit": "Hariri",
+    "close": "Funga",
+    "back": "Rudi",
+    "next": "Ifuatayo",
+    "submit": "Wasilisha",
+    "search": "Tafuta",
+    "filter": "Chuja",
+    "export": "Hamisha"
+  },
+  "auth": {
+    "login": "Ingia",
+    "signup": "Jisajili",
+    "logout": "Toka",
+    "email": "Barua pepe",
+    "password": "Nenosiri",
+    "name": "Jina",
+    "forgotPassword": "Umesahau nenosiri?",
+    "resetPassword": "Weka upya nenosiri",
+    "createAccount": "Unda akaunti",
+    "alreadyHaveAccount": "Tayari una akaunti?",
+    "dontHaveAccount": "Huna akaunti?",
+    "emailVerification": "Uthibitishaji wa barua pepe",
+    "verifyEmail": "Tafadhali thibitisha anwani yako ya barua pepe",
+    "emailVerified": "Barua pepe imethibitishwa kwa mafanikio!",
+    "checkEmail": "Tafadhali angalia barua pepe yako kwa kiungo cha uthibitishaji",
+    "invalidCredentials": "Barua pepe au nenosiri si sahihi",
+    "emailNotVerified": "Tafadhali thibitisha barua pepe yako kabla ya kuingia",
+    "passwordResetSent": "Ikiwa barua pepe ipo, kiungo cha kuweka upya nenosiri kimetumwa",
+    "passwordResetSuccess": "Nenosiri limewekwa upya kwa mafanikio"
+  },
+  "subscription": {
+    "tiers": {
+      "free": "Kiwango cha Bure",
+      "premium1": "Kiwango cha Premium 1",
+      "premium2": "Kiwango cha Premium 2"
+    },
+    "pricing": {
+      "free": "KES 0/kwa mwezi",
+      "premium1": "KES 2,000/kwa mwezi",
+      "premium2": "KES 5,000/kwa mwezi"
+    },
+    "features": {
+      "free": "Uchunguzi wa kimsingi wa magonjwa unaopatikana kwa wakulima wote",
+      "premium1": "Ufahamu wa hali ya juu, ufuatiliaji wa historia, mapendekezo ya kibinafsi, ushauri wa moja kwa moja kutoka kwa mtaalamu wa kilimo",
+      "premium2": "Vipengele vyote vya Kiwango cha Premium 1 pamoja na kipaumbele cha juu cha ushauri na uchambuzi wa ziada"
+    },
+    "current": "Jisajili la Sasa",
+    "upgrade": "Pandisha",
+    "downgrade": "Shusha",
+    "cancel": "Ghairi Jisajili",
+    "purchase": "Nunua Jisajili",
+    "active": "Inaendelea",
+    "canceled": "Imeghairiwa",
+    "pastDue": "Imechelewa"
+  },
+  "prediction": {
+    "title": "Uchunguzi wa Magonjwa",
+    "upload": "Pakia Picha",
+    "camera": "Piga Picha",
+    "analyzing": "Inachambua...",
+    "confidence": "Uhakika",
+    "disease": "Ugonjwa",
+    "description": "Maelezo",
+    "recommendation": "Mapendekezo",
+    "history": "Historia ya Uchunguzi",
+    "noHistory": "Bado hakuna historia ya uchunguzi",
+    "deleteConfirm": "Je, una uhakika unataka kufuta uchunguzi huu?",
+    "tooltip": "Uhakika wa mfano (umeorodheshwa) — maadili yamewekwa hadi 100%"
+  },
+  "admin": {
+    "dashboard": "Dashibodi ya Msimamizi",
+    "users": "Watumiaji",
+    "predictions": "Utabiri",
+    "stats": "Takwimu",
+    "totalUsers": "Jumla ya Watumiaji",
+    "verifiedUsers": "Watumiaji Waliohakikiwa",
+    "activeSubscriptions": "Jisajili Zinazoendelea",
+    "totalPredictions": "Jumla ya Utabiri",
+    "avgConfidence": "Wastani wa Uhakika",
+    "userDetails": "Maelezo ya Mtumiaji",
+    "registrationDate": "Tarehe ya Usajili",
+    "lastLogin": "Ingia la Mwisho",
+    "verifiedStatus": "Hali ya Uhakiki",
+    "subscriptionStatus": "Hali ya Jisajili",
+    "viewAllPredictions": "Angalia Utabiri Wote",
+    "exportData": "Hamisha Data",
+    "updateSubscription": "Sasisha Jisajili",
+    "impersonate": "Jifanye Mtumiaji"
+  },
+  "errors": {
+    "validation": {
+      "required": "Sehemu hii inahitajika",
+      "email": "Muundo wa barua pepe si sahihi",
+      "passwordMin": "Nenosiri lazima liwe na angalau herufi 8",
+      "passwordStrength": "Nenosiri lazima liwe na angalau herufi moja na nambari moja"
+    },
+    "network": "Kosa la mtandao. Tafadhali angalia muunganisho wako.",
+    "server": "Kosa la seva. Tafadhali jaribu tena baadaye.",
+    "unauthorized": "Huna ruhusa ya kufanya kitendo hiki",
+    "notFound": "Rasilimali haipatikani",
+    "generic": "Kosa limetokea. Tafadhali jaribu tena."
+  },
+  "validation": {
+    "emailRequired": "Barua pepe inahitajika",
+    "passwordRequired": "Nenosiri linahitajika",
+    "nameRequired": "Jina linahitajika",
+    "invalidEmail": "Muundo wa barua pepe si sahihi",
+    "weakPassword": "Nenosiri lazima liwe na angalau herufi 8 na angalau herufi moja na nambari moja"
+  }
+}
+
+

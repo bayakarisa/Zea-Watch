@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { AnalysisResult as AnalysisResultType } from '@/utils/api'
 import { CheckCircle2, XCircle } from 'lucide-react'
 import { Button } from './ui/button'
+import ReactMarkdown from 'react-markdown'
 
 interface AnalysisResultProps {
   result: AnalysisResultType
@@ -19,7 +20,7 @@ export const AnalysisResult: React.FC<AnalysisResultProps> = ({ result, onClose 
           <div>
             <CardTitle className="text-primary mb-2">Analysis Complete</CardTitle>
             <p className="text-sm text-gray-600">
-              Confidence: <strong>{(result.confidence * 100).toFixed(1)}%</strong>
+              Confidence: <strong>{result.confidence.toFixed(1)}%</strong>
             </p>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose}>
@@ -37,12 +38,16 @@ export const AnalysisResult: React.FC<AnalysisResultProps> = ({ result, onClose 
 
         <div>
           <h4 className="font-semibold text-gray-700 mb-2">Description</h4>
-          <p className="text-sm text-gray-600 leading-relaxed">{result.description}</p>
+          <div className="text-sm text-gray-600 leading-relaxed prose prose-sm max-w-none">
+            <ReactMarkdown>{result.description}</ReactMarkdown>
+          </div>
         </div>
 
         <div>
           <h4 className="font-semibold text-gray-700 mb-2">Recommendations</h4>
-          <div className="text-sm text-gray-600 whitespace-pre-line">{result.recommendation}</div>
+          <div className="text-sm text-gray-600 prose prose-sm max-w-none">
+            <ReactMarkdown>{result.recommendation}</ReactMarkdown>
+          </div>
         </div>
       </CardContent>
     </Card>
