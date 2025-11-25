@@ -35,9 +35,9 @@ class PostgresService:
                 **self.db_config
             )
             if self.pool:
-                print("✅ Database connection pool created successfully")
+                print("Database connection pool created successfully")
         except Exception as e:
-            print(f"❌ Error creating connection pool: {e}")
+            print(f"Error creating connection pool: {e}")
             self.pool = None
     
     @contextmanager

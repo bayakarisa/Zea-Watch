@@ -1,0 +1,182 @@
+{
+    "nav": {
+        "home": "Accueil",
+        "dashboard": "Tableau de bord",
+        "history": "Historique",
+        "settings": "Paramètres",
+        "signin": "Se connecter",
+        "signout": "Se déconnecter",
+        "about": "À propos",
+        "profile": "Profil",
+        "map": "Carte"
+    },
+    "actions": {
+        "upload": "Télécharger une image",
+        "analyze": "Analyser",
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "view": "Voir",
+        "close": "Fermer"
+    },
+    "messages": {
+        "loading": "Chargement...",
+        "success": "Succès !",
+        "error": "Une erreur s'est produite. Veuillez réessayer.",
+        "welcome": "Bienvenue, {{name}}",
+        "upload_prompt": "Glissez-déposez ou cliquez pour télécharger",
+        "no_uploads": "Aucun téléchargement pour le moment. Commencez par ajouter un fichier ci-dessus.",
+        "no_recommendations": "Aucune recommandation disponible pour le moment."
+    },
+    "validation": {
+        "required": "Ce champ est obligatoire",
+        "email_invalid": "Adresse e-mail invalide",
+        "password_short": "Le mot de passe doit contenir au moins 8 caractères"
+    },
+    "dashboard": {
+        "welcome_back": "Bon retour",
+        "subtitle": "Suivez vos téléchargements, consultez des recommandations personnalisées et gérez votre compte ZeaWatch.",
+        "stats": {
+            "uploads": "Téléchargements",
+            "uploads_desc": "Total des fichiers téléchargés",
+            "recommendations": "Recommandations",
+            "recommendations_desc": "Informations générées pour vous",
+            "role": "Rôle du compte",
+            "role_desc": "Votre niveau d'accès"
+        },
+        "upload": {
+            "title": "Télécharger de nouvelles données",
+            "desc": "Joignez de nouvelles images ou fichiers pour vos dossiers agronomiques.",
+            "error_no_file": "Choisissez un fichier à télécharger",
+            "button": "Télécharger le fichier",
+            "uploading": "Téléchargement...",
+            "help_text": "Taille max 5 Mo. Formats acceptés : images, PDF, ZIP."
+        },
+        "uploads": {
+            "title": "Mes téléchargements",
+            "desc": "Seuls vous (et les administrateurs) pouvez voir ces fichiers.",
+            "confirm_delete": "Supprimer ce téléchargement ?",
+            "size_unknown": "taille inconnue"
+        },
+        "recommendations": {
+            "title": "Recommandations",
+            "desc": "Informations personnalisées générées pour votre exploitation.",
+            "score": "Score :",
+            "see_details": "Voir le contenu détaillé ci-dessous.",
+            "generated": "Généré"
+        }
+    },
+    "history": {
+        "title": "Historique des analyses",
+        "export_csv": "Exporter CSV",
+        "filters": {
+            "title": "Filtres",
+            "disease": "Maladie",
+            "disease_placeholder": "Filtrer par maladie",
+            "field": "Champ",
+            "field_placeholder": "Filtrer par champ",
+            "date_from": "Date de début",
+            "date_to": "Date de fin",
+            "clear": "Effacer les filtres"
+        },
+        "empty": {
+            "no_analyses": "Aucune analyse pour le moment. Commencez à analyser des feuilles pour voir votre historique.",
+            "no_matches": "Aucune analyse ne correspond à vos filtres."
+        },
+        "card": {
+            "view_details": "Voir les détails",
+            "field": "Champ"
+        },
+        "details": {
+            "confidence": "Confiance",
+            "recommendation": "Recommandation",
+            "field": "Champ",
+            "notes": "Notes"
+        },
+        "share": {
+            "title": "Partager l'analyse",
+            "desc": "Partagez cette analyse avec des agronomes ou des collaborateurs",
+            "link_label": "Lien de partage",
+            "copy": "Copier",
+            "copied": "Lien copié dans le presse-papiers !",
+            "help_text": "Ce lien sera valide pendant 30 jours et offre un accès en lecture seule à cette analyse.",
+            "error": "Échec de la création du lien de partage"
+        },
+        "export": {
+            "report_title": "Rapport d'analyse ZeaWatch",
+            "disease": "Maladie",
+            "confidence": "Confiance",
+            "date": "Date",
+            "desc": "Description",
+            "rec": "Recommandation",
+            "field": "Champ"
+        }
+    },
+    "map": {
+        "title": "Cartographie des champs",
+        "filters": {
+            "title": "Filtres",
+            "disease": "Maladie",
+            "disease_placeholder": "Filtrer par maladie",
+            "date_from": "Date de début",
+            "date_to": "Date de fin",
+            "clear": "Effacer les filtres"
+        },
+        "card": {
+            "title": "Emplacements des champs",
+            "desc": "Coordonnées GPS de vos analyses. Les marqueurs sont codés par couleur selon le type de maladie.",
+            "no_data": "Aucune analyse avec des données de localisation. Activez le GPS lors de l'analyse des feuilles pour les voir sur la carte.",
+            "invalid_data": "Données de localisation invalides"
+        },
+        "popup": {
+            "confidence": "Confiance",
+            "date": "Date",
+            "field": "Champ"
+        },
+        "regional": {
+            "title": "Résumé régional des maladies",
+            "desc": "Données agrégées par région (coordonnées GPS arrondies pour la confidentialité)",
+            "region": "Région"
+        },
+        "legend": {
+            "title": "Légende"
+        }
+    },
+    "auth": {
+        "signin": {
+            "title": "Se connecter",
+            "subtitle": "Bon retour ! Connectez-vous à votre compte ZeaWatch",
+            "email": "E-mail",
+            "password": "Mot de passe",
+            "remember_me": "Se souvenir de moi",
+            "forgot_password": "Mot de passe oublié ?",
+            "button": "Se connecter",
+            "button_loading": "Connexion en cours...",
+            "no_account": "Pas de compte ?",
+            "create_account": "Créer un compte",
+            "error_required": "E-mail et mot de passe requis",
+            "error_failed": "Échec de la connexion"
+        },
+        "signup": {
+            "title": "Créer un compte",
+            "subtitle": "Inscrivez-vous à ZeaWatch pour commencer à détecter les maladies des feuilles de maïs",
+            "name": "Nom",
+            "email": "E-mail",
+            "password": "Mot de passe",
+            "confirm_password": "Confirmer le mot de passe",
+            "agree_terms": "J'accepte les",
+            "terms_link": "Conditions générales",
+            "button": "S'inscrire",
+            "button_loading": "Création du compte...",
+            "has_account": "Vous avez déjà un compte ?",
+            "signin_link": "Se connecter",
+            "error_required": "Tous les champs sont obligatoires",
+            "error_match": "Les mots de passe ne correspondent pas",
+            "error_length": "Le mot de passe doit contenir au moins 6 caractères",
+            "error_terms": "Vous devez accepter les Conditions générales",
+            "error_failed": "Échec de la création du compte",
+            "success_message": "Veuillez vérifier votre e-mail pour valider votre compte"
+        }
+    }
+}

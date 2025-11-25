@@ -23,6 +23,7 @@ import Image from 'next/image'
 import Papa from 'papaparse'
 import jsPDF from 'jspdf'
 import { useAuth } from '@/context/AuthContext'
+import { useTranslation } from 'react-i18next'
 
 interface Analysis {
   id: string
@@ -37,6 +38,7 @@ interface Analysis {
 }
 
 export default function HistoryPage() {
+  const { t } = useTranslation('common')
   const router = useRouter()
   const { user, token: contextToken } = useAuth()
   const [analyses, setAnalyses] = useState<Analysis[]>([])
@@ -141,7 +143,7 @@ export default function HistoryPage() {
       setShareDialogOpen(true)
     } catch (err: any) {
       console.error('Error creating share:', err)
-      alert('Failed to create share link')
+      alert(t('history.share.error'))
     }
   }
 
@@ -159,15 +161,15 @@ export default function HistoryPage() {
   const handleExportPDF = async (analysis: Analysis) => {
     const pdf = new jsPDF()
     pdf.setFontSize(16)
-    pdf.text('ZeaWatch Analysis Report', 20, 20)
+    pdf.text(t('history.export.report_title'), 20, 20)
     pdf.setFontSize(12)
-    pdf.text(`Disease: ${analysis.disease}`, 20, 35)
-    pdf.text(`Confidence: ${analysis.confidence}%`, 20, 45)
-    pdf.text(`Date: ${new Date(analysis.created_at).toLocaleDateString()}`, 20, 55)
-    pdf.text(`Description: ${analysis.description}`, 20, 70)
-    pdf.text(`Recommendation: ${analysis.recommendation}`, 20, 90)
+    pdf.text(`${t('history.export.disease')}: ${analysis.disease}`, 20, 35)
+    pdf.text(`${t('history.export.confidence')}: ${analysis.confidence}%`, 20, 45)
+    pdf.text(`${t('history.export.date')}: ${new Date(analysis.created_at).toLocaleDateString()}`, 20, 55)
+    pdf.text(`${t('history.export.desc')}: ${analysis.description}`, 20, 70)
+    pdf.text(`${t('history.export.rec')}: ${analysis.recommendation}`, 20, 90)
     if (analysis.field_name) {
-      pdf.text(`Field: ${analysis.field_name}`, 20, 110)
+      pdf.text(`${t('history.export.field')}: ${analysis.field_name}`, 20, 110)
     }
     pdf.save(`zeawatch-analysis-${analysis.id}.pdf`)
   }
@@ -199,11 +201,11 @@ export default function HistoryPage() {
       <Navbar />
       <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-7xl">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold text-foreground">Analysis History</h1>
+          <h1 className="text-4xl font-bold text-foreground">{t('history.title')}</h1>
           <div className="flex gap-2">
             <Button variant="outline" onClick={handleExportCSV}>
               <Download className="mr-2 h-4 w-4" />
-              Export CSV
+              {t('history.export_csv')}
             </Button>
           </div>
         </div>
@@ -213,31 +215,31 @@ export default function HistoryPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Filter className="h-5 w-5" />
-              Filters
+              {t('history.filters.title')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="disease">Disease</Label>
+                <Label htmlFor="disease">{t('history.filters.disease')}</Label>
                 <Input
                   id="disease"
-                  placeholder="Filter by disease"
+                  placeholder={t('history.filters.disease_placeholder')}
                   value={filters.disease}
                   onChange={(e) => setFilters({ ...filters, disease: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="field">Field</Label>
+                <Label htmlFor="field">{t('history.filters.field')}</Label>
                 <Input
                   id="field"
-                  placeholder="Filter by field"
+                  placeholder={t('history.filters.field_placeholder')}
                   value={filters.field}
                   onChange={(e) => setFilters({ ...filters, field: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="dateFrom">From Date</Label>
+                <Label htmlFor="dateFrom">{t('history.filters.date_from')}</Label>
                 <Input
                   id="dateFrom"
                   type="date"
@@ -246,7 +248,7 @@ export default function HistoryPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="dateTo">To Date</Label>
+                <Label htmlFor="dateTo">{t('history.filters.date_to')}</Label>
                 <Input
                   id="dateTo"
                   type="date"
@@ -263,7 +265,7 @@ export default function HistoryPage() {
                   setFilters({ disease: '', field: '', dateFrom: '', dateTo: '' })
                 }
               >
-                Clear Filters
+                {t('history.filters.clear')}
               </Button>
             )}
           </CardContent>
@@ -275,8 +277,8 @@ export default function HistoryPage() {
             <CardContent className="py-12 text-center">
               <p className="text-muted-foreground">
                 {analyses.length === 0
-                  ? 'No analyses yet. Start analyzing leaves to see your history.'
-                  : 'No analyses match your filters.'}
+                  ? t('history.empty.no_analyses')
+                  : t('history.empty.no_matches')}
               </p>
             </CardContent>
           </Card>
@@ -316,7 +318,7 @@ export default function HistoryPage() {
                   </p>
                   {analysis.field_name && (
                     <p className="text-sm text-muted-foreground">
-                      Field: {analysis.field_name}
+                      {t('history.card.field')}: {analysis.field_name}
                     </p>
                   )}
                   <div className="flex gap-2">
@@ -325,7 +327,7 @@ export default function HistoryPage() {
                       size="sm"
                       onClick={() => setSelectedAnalysis(analysis)}
                     >
-                      View Details
+                      {t('history.card.view_details')}
                     </Button>
                     <Button
                       variant="outline"
@@ -373,22 +375,22 @@ export default function HistoryPage() {
                     </div>
                   )}
                   <div>
-                    <h3 className="font-semibold mb-2">Confidence: {selectedAnalysis.confidence}%</h3>
+                    <h3 className="font-semibold mb-2">{t('history.details.confidence')}: {selectedAnalysis.confidence}%</h3>
                     <p className="text-muted-foreground">{selectedAnalysis.description}</p>
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-2">Recommendation</h3>
+                    <h3 className="font-semibold mb-2">{t('history.details.recommendation')}</h3>
                     <p className="text-muted-foreground">{selectedAnalysis.recommendation}</p>
                   </div>
                   {selectedAnalysis.field_name && (
                     <div>
-                      <h3 className="font-semibold mb-2">Field</h3>
+                      <h3 className="font-semibold mb-2">{t('history.details.field')}</h3>
                       <p className="text-muted-foreground">{selectedAnalysis.field_name}</p>
                     </div>
                   )}
                   {selectedAnalysis.notes && (
                     <div>
-                      <h3 className="font-semibold mb-2">Notes</h3>
+                      <h3 className="font-semibold mb-2">{t('history.details.notes')}</h3>
                       <p className="text-muted-foreground">{selectedAnalysis.notes}</p>
                     </div>
                   )}
@@ -402,29 +404,29 @@ export default function HistoryPage() {
         <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Share Analysis</DialogTitle>
+              <DialogTitle>{t('history.share.title')}</DialogTitle>
               <DialogDescription>
-                Share this analysis with agronomists or collaborators
+                {t('history.share.desc')}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label>Share Link</Label>
+                <Label>{t('history.share.link_label')}</Label>
                 <div className="flex gap-2">
                   <Input value={shareLink} readOnly />
                   <Button
                     variant="outline"
                     onClick={() => {
                       navigator.clipboard.writeText(shareLink)
-                      alert('Link copied to clipboard!')
+                      alert(t('history.share.copied'))
                     }}
                   >
-                    Copy
+                    {t('history.share.copy')}
                   </Button>
                 </div>
               </div>
               <p className="text-sm text-muted-foreground">
-                This link will be valid for 30 days and provides view-only access to this analysis.
+                {t('history.share.help_text')}
               </p>
             </div>
           </DialogContent>

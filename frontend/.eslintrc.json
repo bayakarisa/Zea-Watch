@@ -1,0 +1,38 @@
+{
+    "extends": [
+        "next/core-web-vitals",
+        "plugin:i18next/recommended"
+    ],
+    "plugins": [
+        "i18next"
+    ],
+    "rules": {
+        "i18next/no-literal-string": [
+            "warn",
+            {
+                "markupOnly": true,
+                "ignoreAttribute": [
+                    "className",
+                    "style",
+                    "href",
+                    "src",
+                    "alt",
+                    "target",
+                    "rel",
+                    "width",
+                    "height",
+                    "type",
+                    "id",
+                    "name",
+                    "placeholder",
+                    "value",
+                    "defaultValue",
+                    "key",
+                    "variant",
+                    "size",
+                    "asChild"
+                ]
+            }
+        ]
+    }
+}

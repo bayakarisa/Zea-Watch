@@ -42,7 +42,7 @@ class GeminiService:
                     for preferred in preferred_models:
                         if preferred in available_models:
                             available_model_name = preferred
-                            print(f"✅ Found preferred model: {preferred}")
+                            print(f"Found preferred model: {preferred}")
                             break
                     
                     # If no preferred model found, use first available
@@ -71,16 +71,16 @@ class GeminiService:
                     try:
                         print(f"Attempting to initialize Gemini model: {model_name}")
                         self.model = genai.GenerativeModel(model_name)
-                        print(f"✅ Successfully initialized Gemini model: {model_name}")
+                        print(f"Successfully initialized Gemini model: {model_name}")
                         break
                     except Exception as e:
                         error_msg = str(e)
-                        print(f"❌ Failed to initialize {model_name}: {error_msg}")
+                        print(f"Failed to initialize {model_name}: {error_msg}")
                         # Continue to next model
                         continue
                 
                 if self.model is None:
-                    print("❌ Could not initialize any Gemini model")
+                    print("Could not initialize any Gemini model")
                     print("Please check:")
                     print("  1. Your Gemini API key is correct")
                     print("  2. You have access to Gemini API")
@@ -169,31 +169,31 @@ Your answer:"""
             
             # Check for valid maize leaf (must contain this exact phrase)
             if "VALID_MAIZE_LEAF" in text_upper:
-                print("✅ Validation: Valid maize leaf detected")
+                print("Validation: Valid maize leaf detected")
                 return True, ""
             
             # Check for not a leaf at all
             elif "NOT_A_LEAF" in text_upper or "NOTALEAF" in text_upper:
-                print("❌ Validation: Not a leaf detected")
+                print("Validation: Not a leaf detected")
                 return False, "This image does not appear to be a leaf. Please upload an image of a maize leaf."
             
             # Check for different leaf (not maize)
             elif "NOT_MAIZE_LEAF" in text_upper or "NOTMAIZELEAF" in text_upper:
-                print("❌ Validation: Different leaf detected")
+                print("Validation: Different leaf detected")
                 return False, "This does not appear to be a maize leaf. ZeaWatch only analyzes maize (corn) leaves. Please upload an image of a maize leaf."
             
             # Additional checks for common variations - check individual words
             elif any(phrase in text_upper for phrase in ["NOT_A_MAIZE", "NOTMAIZE", "NOT_MAIZE", "DIFFERENT_PLANT", "NOT_CORN", "OTHER_PLANT"]):
-                print("❌ Validation: Different plant/leaf detected")
+                print("Validation: Different plant/leaf detected")
                 return False, "This does not appear to be a maize leaf. ZeaWatch only analyzes maize (corn) leaves. Please upload an image of a maize leaf."
             
             elif any(phrase in text_upper for phrase in ["NOT_A_LEAF", "NOTALEAF", "NO_LEAF", "NOT_LEAF", "NOT_LEAVES"]):
-                print("❌ Validation: Not a leaf detected")
+                print("Validation: Not a leaf detected")
                 return False, "This image does not appear to be a leaf. Please upload an image of a maize leaf."
             
             # If response is unclear or doesn't match, be conservative and reject
             else:
-                print(f"⚠️ Validation: Unclear response, REJECTING. Response: {text}")
+                print(f"Validation: Unclear response, REJECTING. Response: {text}")
                 print(f"   This means Gemini didn't respond with expected format")
                 return False, "Unable to confirm this is a maize leaf. Please upload a clear image of a maize leaf."
 

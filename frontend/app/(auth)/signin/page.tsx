@@ -13,10 +13,12 @@ import { Footer } from '@/components/Footer'
 import { signIn } from '@/lib/auth'
 import { migrateGuestAnalyses } from '@/utils/api'
 import { AlertCircle, Loader2, CheckCircle2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import { useAuth } from '@/context/AuthContext'
 
 export default function SignInPage() {
+  const { t } = useTranslation('common')
   const router = useRouter()
   const searchParams = useSearchParams()
   const { login } = useAuth()
@@ -42,7 +44,7 @@ export default function SignInPage() {
     setSuccess(null)
 
     if (!formData.email || !formData.password) {
-      setError('Email and password are required')
+      setError(t('auth.signin.error_required'))
       return
     }
 
@@ -74,7 +76,7 @@ export default function SignInPage() {
         throw new Error('Login failed: Missing token or user data')
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in')
+      setError(err.message || t('auth.signin.error_failed'))
     } finally {
       setLoading(false)
     }
@@ -86,9 +88,9 @@ export default function SignInPage() {
       <main className="flex-1 flex items-center justify-center px-4 py-12">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-2xl">Sign In</CardTitle>
+            <CardTitle className="text-2xl">{t('auth.signin.title')}</CardTitle>
             <CardDescription>
-              Welcome back! Sign in to your ZeaWatch account
+              {t('auth.signin.subtitle')}
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
@@ -108,7 +110,7 @@ export default function SignInPage() {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('auth.signin.email')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -120,7 +122,7 @@ export default function SignInPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('auth.signin.password')}</Label>
                 <Input
                   id="password"
                   type="password"
@@ -144,14 +146,14 @@ export default function SignInPage() {
                     htmlFor="rememberMe"
                     className="text-sm font-normal cursor-pointer"
                   >
-                    Remember Me
+                    {t('auth.signin.remember_me')}
                   </Label>
                 </div>
                 <Link
                   href="/forgot-password"
                   className="text-sm text-primary hover:underline"
                 >
-                  Forgot Password?
+                  {t('auth.signin.forgot_password')}
                 </Link>
               </div>
             </CardContent>
@@ -160,16 +162,16 @@ export default function SignInPage() {
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Signing in...
+                    {t('auth.signin.button_loading')}
                   </>
                 ) : (
-                  'Sign In'
+                  t('auth.signin.button')
                 )}
               </Button>
               <p className="text-sm text-center text-muted-foreground">
-                Don't have an account?{' '}
+                {t('auth.signin.no_account')}{' '}
                 <Link href="/signup" className="text-primary hover:underline">
-                  Create Account
+                  {t('auth.signin.create_account')}
                 </Link>
               </p>
             </CardFooter>

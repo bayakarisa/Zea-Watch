@@ -1,0 +1,182 @@
+{
+    "nav": {
+        "home": "Nyumbani",
+        "dashboard": "Dashibodi",
+        "history": "Historia",
+        "settings": "Mipangilio",
+        "signin": "Weka Sahihi",
+        "signout": "Ondoka",
+        "about": "Kuhusu Sisi",
+        "profile": "Wasifu",
+        "map": "Ramani"
+    },
+    "actions": {
+        "upload": "Pakia Picha",
+        "analyze": "Chambua",
+        "cancel": "Ghairi",
+        "save": "Hifadhi",
+        "delete": "Futa",
+        "edit": "Hariri",
+        "view": "Angalia",
+        "close": "Funga"
+    },
+    "messages": {
+        "loading": "Inapakia...",
+        "success": "Imefaulu!",
+        "error": "Hitilafu imetokea. Tafadhali jaribu tena.",
+        "welcome": "Karibu, {{name}}",
+        "upload_prompt": "Buruta picha hapa au bonyeza kuchagua",
+        "no_uploads": "Hakuna machapisho bado. Anza kwa kuongeza faili hapo juu.",
+        "no_recommendations": "Hakuna mapendekezo bado."
+    },
+    "validation": {
+        "required": "Sehemu hii inahitajika",
+        "email_invalid": "Barua pepe si sahihi",
+        "password_short": "Nenosiri lazima liwe na angalau herufi 8"
+    },
+    "dashboard": {
+        "welcome_back": "Karibu tena",
+        "subtitle": "Fuatilia faili zako, angalia mapendekezo, na dhibiti akaunti yako ya ZeaWatch.",
+        "stats": {
+            "uploads": "Faili",
+            "uploads_desc": "Jumla ya faili ulizopakia",
+            "recommendations": "Mapendekezo",
+            "recommendations_desc": "Ushauri uliotolewa kwako",
+            "role": "Nafasi ya Akaunti",
+            "role_desc": "Kiwango chako cha ufikiaji"
+        },
+        "upload": {
+            "title": "Pakia Data Mpya",
+            "desc": "Weka picha mpya au faili kwa ajili ya kumbukumbu zako za kilimo.",
+            "error_no_file": "Chagua faili la kupakia",
+            "button": "Pakia faili",
+            "uploading": "Inapakia...",
+            "help_text": "Ukubwa wa juu 5MB. Aina zinazokubalika: picha, PDF, ZIP."
+        },
+        "uploads": {
+            "title": "Faili Zangu",
+            "desc": "Ni wewe tu (na wasimamizi) mnaoweza kuona faili hizi.",
+            "confirm_delete": "Futa faili hili?",
+            "size_unknown": "ukubwa haujulikani"
+        },
+        "recommendations": {
+            "title": "Mapendekezo",
+            "desc": "Ushauri maalum uliotolewa kwa ajili ya shamba lako.",
+            "score": "Alama:",
+            "see_details": "Angalia maelezo hapa chini.",
+            "generated": "Imetolewa"
+        }
+    },
+    "history": {
+        "title": "Historia ya Uchambuzi",
+        "export_csv": "Pakua CSV",
+        "filters": {
+            "title": "Vichujio",
+            "disease": "Ugonjwa",
+            "disease_placeholder": "Chuja kwa ugonjwa",
+            "field": "Shamba",
+            "field_placeholder": "Chuja kwa shamba",
+            "date_from": "Tarehe Kuanzia",
+            "date_to": "Tarehe Hadi",
+            "clear": "Futa Vichujio"
+        },
+        "empty": {
+            "no_analyses": "Hakuna uchambuzi bado. Anza kuchambua majani ili kuona historia yako.",
+            "no_matches": "Hakuna uchambuzi unaolingana na vichujio vyako."
+        },
+        "card": {
+            "view_details": "Angalia Maelezo",
+            "field": "Shamba"
+        },
+        "details": {
+            "confidence": "Uhakika",
+            "recommendation": "Pendekezo",
+            "field": "Shamba",
+            "notes": "Maelezo"
+        },
+        "share": {
+            "title": "Shiriki Uchambuzi",
+            "desc": "Shiriki uchambuzi huu na wataalamu wa kilimo au washirika",
+            "link_label": "Kiungo cha Kushiriki",
+            "copy": "Nakili",
+            "copied": "Kiungo kimenakiliwa!",
+            "help_text": "Kiungo hiki kitafanya kazi kwa siku 30 na kinatoa uwezo wa kuona tu uchambuzi huu.",
+            "error": "Imeshindikana kutengeneza kiungo cha kushiriki"
+        },
+        "export": {
+            "report_title": "Ripoti ya Uchambuzi wa ZeaWatch",
+            "disease": "Ugonjwa",
+            "confidence": "Uhakika",
+            "date": "Tarehe",
+            "desc": "Maelezo",
+            "rec": "Pendekezo",
+            "field": "Shamba"
+        }
+    },
+    "map": {
+        "title": "Ramani ya Mashamba",
+        "filters": {
+            "title": "Vichujio",
+            "disease": "Ugonjwa",
+            "disease_placeholder": "Chuja kwa ugonjwa",
+            "date_from": "Tarehe Kuanzia",
+            "date_to": "Tarehe Hadi",
+            "clear": "Futa Vichujio"
+        },
+        "card": {
+            "title": "Maeneo ya Mashamba",
+            "desc": "Maeneo ya GPS ya uchambuzi wako. Alama zina rangi kulingana na aina ya ugonjwa.",
+            "no_data": "Hakuna uchambuzi wenye data ya eneo. Washa GPS wakati wa kuchambua majani ili kuyaona kwenye ramani.",
+            "invalid_data": "Data ya eneo si sahihi"
+        },
+        "popup": {
+            "confidence": "Uhakika",
+            "date": "Tarehe",
+            "field": "Shamba"
+        },
+        "regional": {
+            "title": "Muhtasari wa Magonjwa Kikanda",
+            "desc": "Data iliyokusanywa kwa kanda (viwianishi vya GPS vimezungushwa kwa faragha)",
+            "region": "Kanda"
+        },
+        "legend": {
+            "title": "Ufunguo"
+        }
+    },
+    "auth": {
+        "signin": {
+            "title": "Weka Sahihi",
+            "subtitle": "Karibu tena! Ingia kwenye akaunti yako ya ZeaWatch",
+            "email": "Barua Pepe",
+            "password": "Nenosiri",
+            "remember_me": "Nikumbuke",
+            "forgot_password": "Umesahau Nenosiri?",
+            "button": "Weka Sahihi",
+            "button_loading": "Inaingia...",
+            "no_account": "Huna akaunti?",
+            "create_account": "Tengeneza Akaunti",
+            "error_required": "Barua pepe na nenosiri zinahitajika",
+            "error_failed": "Imeshindikana kuingia"
+        },
+        "signup": {
+            "title": "Tengeneza Akaunti",
+            "subtitle": "Jisajili ZeaWatch ili kuanza kugundua magonjwa ya majani ya mahindi",
+            "name": "Jina",
+            "email": "Barua Pepe",
+            "password": "Nenosiri",
+            "confirm_password": "Thibitisha Nenosiri",
+            "agree_terms": "Ninakubali",
+            "terms_link": "Vigezo na Masharti",
+            "button": "Jisajili",
+            "button_loading": "Inatengeneza akaunti...",
+            "has_account": "Tayari una akaunti?",
+            "signin_link": "Weka Sahihi",
+            "error_required": "Sehemu zote zinahitajika",
+            "error_match": "Nenosiri hazilingani",
+            "error_length": "Nenosiri lazima liwe na angalau herufi 6",
+            "error_terms": "Lazima ukubali Vigezo na Masharti",
+            "error_failed": "Imeshindikana kutengeneza akaunti",
+            "success_message": "Tafadhali angalia barua pepe yako ili kuthibitisha akaunti yako"
+        }
+    }
+}

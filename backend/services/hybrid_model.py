@@ -64,13 +64,13 @@ class HybridModel(nn.Module):
                 # The saved model is a HybridModel state_dict (keys start with cnn_model... and vit_model...)
                 # So we load it into 'self', not 'self.cnn_model'
                 self.load_state_dict(state_dict)
-                print(f"✅ Successfully loaded HybridModel (EfficientNet+ViT) from {model_path}")
+                print(f"Successfully loaded HybridModel (EfficientNet+ViT) from {model_path}")
             else:
                 print(f"Warning: Model file not found at {model_path}. Using initialized model (untrained).")
                 self.cnn_model = None
 
         except Exception as e:
-            print(f"❌ Failed to load model: {str(e)}")
+            print(f"Failed to load model: {str(e)}")
             # Fallback to None so we don't crash, but predictions will be dummy
             self.cnn_model = None
 

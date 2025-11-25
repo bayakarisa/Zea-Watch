@@ -1,0 +1,28 @@
+{
+    "maize": {
+        "northern_leaf_blight": {
+            "name": "Northern Leaf Blight",
+            "description": "Fungal disease causing long, grayish lesions on leaves.",
+            "recommendation": "Use resistant varieties and crop rotation."
+        },
+        "common_rust": {
+            "name": "Common Rust",
+            "description": "Small, powdery brown pustules on both leaf surfaces.",
+            "recommendation": "Apply fungicides early if symptoms appear."
+        },
+        "gray_leaf_spot": {
+            "name": "Gray Leaf Spot",
+            "description": "Rectangular lesions running parallel to leaf veins.",
+            "recommendation": "Remove infected crop residue from the field."
+        },
+        "healthy": {
+            "name": "Healthy",
+            "description": "Plant appears healthy with no visible disease symptoms.",
+            "recommendation": "Continue good field management practices."
+        }
+    },
+    "status": {
+        "needs_review": "Needs Review",
+        "verified": "Verified"
+    }
+}

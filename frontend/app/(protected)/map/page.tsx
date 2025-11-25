@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { supabase } from '@/lib/supabaseClient'
 import { Loader2, MapPin, Filter } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 // Dynamically import MapContainer to avoid SSR issues with Leaflet
 const MapContainer = dynamic(
@@ -48,6 +49,7 @@ const diseaseColors: Record<string, string> = {
 }
 
 export default function MapPage() {
+  const { t } = useTranslation('common')
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
   const [analyses, setAnalyses] = useState<Analysis[]>([])
@@ -186,29 +188,29 @@ export default function MapPage() {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-7xl">
-        <h1 className="text-4xl font-bold text-foreground mb-8">Field Mapping</h1>
+        <h1 className="text-4xl font-bold text-foreground mb-8">{t('map.title')}</h1>
 
         {/* Filters */}
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Filter className="h-5 w-5" />
-              Filters
+              {t('map.filters.title')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="disease">Disease</Label>
+                <Label htmlFor="disease">{t('map.filters.disease')}</Label>
                 <Input
                   id="disease"
-                  placeholder="Filter by disease"
+                  placeholder={t('map.filters.disease_placeholder')}
                   value={filters.disease}
                   onChange={(e) => setFilters({ ...filters, disease: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="dateFrom">From Date</Label>
+                <Label htmlFor="dateFrom">{t('map.filters.date_from')}</Label>
                 <Input
                   id="dateFrom"
                   type="date"
@@ -217,7 +219,7 @@ export default function MapPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="dateTo">To Date</Label>
+                <Label htmlFor="dateTo">{t('map.filters.date_to')}</Label>
                 <Input
                   id="dateTo"
                   type="date"
@@ -232,7 +234,7 @@ export default function MapPage() {
                     setFilters({ disease: '', dateFrom: '', dateTo: '', region: '' })
                   }
                 >
-                  Clear Filters
+                  {t('map.filters.clear')}
                 </Button>
               </div>
             </div>
@@ -242,9 +244,9 @@ export default function MapPage() {
         {/* Map */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Field Locations</CardTitle>
+            <CardTitle>{t('map.card.title')}</CardTitle>
             <CardDescription>
-              GPS locations of your analyses. Markers are color-coded by disease type.
+              {t('map.card.desc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -255,12 +257,12 @@ export default function MapPage() {
             ) : filteredAnalyses.length === 0 ? (
               <div className="h-96 flex items-center justify-center bg-muted rounded-md">
                 <p className="text-muted-foreground">
-                  No analyses with location data. Enable GPS when analyzing leaves to see them on the map.
+                  {t('map.card.no_data')}
                 </p>
               </div>
             ) : !hasValidCenter ? (
               <div className="h-96 flex items-center justify-center bg-muted rounded-md">
-                <p className="text-muted-foreground">Invalid location data</p>
+                <p className="text-muted-foreground">{t('map.card.invalid_data')}</p>
               </div>
             ) : (
               <div className="h-96 w-full rounded-md overflow-hidden border">
@@ -283,12 +285,12 @@ export default function MapPage() {
                         <Popup>
                           <div className="p-2">
                             <h3 className="font-semibold">{analysis.disease}</h3>
-                            <p className="text-sm">Confidence: {analysis.confidence}%</p>
+                            <p className="text-sm">{t('map.popup.confidence')}: {analysis.confidence}%</p>
                             <p className="text-sm">
-                              Date: {new Date(analysis.created_at).toLocaleDateString()}
+                              {t('map.popup.date')}: {new Date(analysis.created_at).toLocaleDateString()}
                             </p>
                             {analysis.field_name && (
-                              <p className="text-sm">Field: {analysis.field_name}</p>
+                              <p className="text-sm">{t('map.popup.field')}: {analysis.field_name}</p>
                             )}
                           </div>
                         </Popup>
@@ -305,16 +307,16 @@ export default function MapPage() {
         {filteredAnalyses.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle>Regional Disease Summary</CardTitle>
+              <CardTitle>{t('map.regional.title')}</CardTitle>
               <CardDescription>
-                Aggregated data by region (GPS coordinates rounded for privacy)
+                {t('map.regional.desc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {Object.entries(getRegionalData()).map(([region, diseases]) => (
                   <div key={region} className="border rounded-md p-4">
-                    <h3 className="font-semibold mb-2">Region: {region}</h3>
+                    <h3 className="font-semibold mb-2">{t('map.regional.region')}: {region}</h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                       {Object.entries(diseases).map(([disease, count]) => (
                         <div key={disease} className="flex items-center gap-2">
@@ -338,7 +340,7 @@ export default function MapPage() {
         {/* Legend */}
         <Card className="mt-6">
           <CardHeader>
-            <CardTitle>Legend</CardTitle>
+            <CardTitle>{t('map.legend.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-4">
