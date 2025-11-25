@@ -1,0 +1,182 @@
+{
+    "nav": {
+        "home": "መነሻ",
+        "dashboard": "ዳሽቦርድ",
+        "history": "ታሪክ",
+        "settings": "ቅንብሮች",
+        "signin": "ይግቡ",
+        "signout": "ውጣ",
+        "about": "ስለ እኛ",
+        "profile": "መገለጫ",
+        "map": "ካርታ"
+    },
+    "actions": {
+        "upload": "ምስል ይስቀሉ",
+        "analyze": "ተንትን",
+        "cancel": "ሰርዝ",
+        "save": "አስቀምጥ",
+        "delete": "ሰርዝ",
+        "edit": "አርትዕ",
+        "view": "ተመልከት",
+        "close": "ዝጋ"
+    },
+    "messages": {
+        "loading": "በመጫን ላይ...",
+        "success": "ተሳክቷል!",
+        "error": "ስህተት ተከስቷል። እባክዎ እንደገና ይሞክሩ።",
+        "welcome": "እንኳን ደህና መጡ፣ {{name}}",
+        "upload_prompt": "ለመስቀል ይጎትቱ እና ይጣሉ ወይም ጠቅ ያድርጉ",
+        "no_uploads": "እስካሁን ምንም የተሰቀለ የለም። ፋይል በማከል ይጀምሩ።",
+        "no_recommendations": "እስካሁን ምንም ምክሮች የሉም።"
+    },
+    "validation": {
+        "required": "ይህ መስክ ያስፈልጋል",
+        "email_invalid": "የማይሰራ ኢሜይል አድራሻ",
+        "password_short": "የይለፍ ቃል ቢያንስ 8 ቁምፊዎች መሆን አለበት"
+    },
+    "dashboard": {
+        "welcome_back": "እንኳን ደህና ተመለሱ",
+        "subtitle": "ሰቀላዎችዎን ይከታተሉ፣ ግላዊ ምክሮችን ይመልከቱ እና የZeaWatch መለያዎን ያስተዳድሩ።",
+        "stats": {
+            "uploads": "ሰቀላዎች",
+            "uploads_desc": "የሰቀሏቸው አጠቃላይ ፋይሎች",
+            "recommendations": "ምክሮች",
+            "recommendations_desc": "ለእርስዎ የተፈጠሩ ግንዛቤዎች",
+            "role": "የመለያ ሚና",
+            "role_desc": "የእርስዎ የመዳረሻ ደረጃ"
+        },
+        "upload": {
+            "title": "አዲስ ውሂብ ይስቀሉ",
+            "desc": "ለግብርና መዝገቦችዎ አዲስ ምስሎችን ወይም ፋይሎችን ያያይዙ።",
+            "error_no_file": "ለመስቀል ፋይል ይምረጡ",
+            "button": "ፋይል ይስቀሉ",
+            "uploading": "በመስቀል ላይ...",
+            "help_text": "ከፍተኛ መጠን 5 ሜባ። ተቀባይነት ያላቸው ቅርጸቶች፡ ምስሎች፣ ፒዲኤፍ፣ ዚፕ።"
+        },
+        "uploads": {
+            "title": "የእኔ ሰቀላዎች",
+            "desc": "እነዚህን ፋይሎች እርስዎ (እና አስተዳዳሪዎች) ብቻ ማየት ይችላሉ።",
+            "confirm_delete": "ይህ ሰቀላ ይሰረዝ?",
+            "size_unknown": "መጠኑ አይታወቅም"
+        },
+        "recommendations": {
+            "title": "ምክሮች",
+            "desc": "ለእርሻዎ የተፈጠሩ ግላዊ ግንዛቤዎች።",
+            "score": "ውጤት:",
+            "see_details": "ዝርዝር ይዘቱን ከዚህ በታች ይመልከቱ።",
+            "generated": "የተፈጠረ"
+        }
+    },
+    "history": {
+        "title": "የትንታኔ ታሪክ",
+        "export_csv": "CSV ላክ",
+        "filters": {
+            "title": "ማጣሪያዎች",
+            "disease": "በሽታ",
+            "disease_placeholder": "በበሽታ አጣራ",
+            "field": "መስክ",
+            "field_placeholder": "በመስክ አጣራ",
+            "date_from": "ከቀን",
+            "date_to": "እስከ ቀን",
+            "clear": "ማጣሪያዎችን አጽዳ"
+        },
+        "empty": {
+            "no_analyses": "እስካሁን ምንም ትንታኔዎች የሉም። ታሪክዎን ለማየት ቅጠሎችን መተንተን ይጀምሩ።",
+            "no_matches": "ማጣሪያዎችዎ ጋር የሚዛመዱ ትንታኔዎች የሉም።"
+        },
+        "card": {
+            "view_details": "ዝርዝሮችን ይመልከቱ",
+            "field": "መስክ"
+        },
+        "details": {
+            "confidence": "እርግጠኝነት",
+            "recommendation": "ምክር",
+            "field": "መስክ",
+            "notes": "ማስታወሻዎች"
+        },
+        "share": {
+            "title": "ትንታኔን ያጋሩ",
+            "desc": "ይህንን ትንታኔ ከግብርና ባለሙያዎች ወይም ተባባሪዎች ጋር ያጋሩ",
+            "link_label": "አገናኝ ያጋሩ",
+            "copy": "ቅዳ",
+            "copied": "አገናኝ ወደ ቅንጥብ ሰሌዳ ተቀድቷል!",
+            "help_text": "ይህ አገናኝ ለ30 ቀናት የሚሰራ ሲሆን ለዚህ ትንታኔ እይታ-ብቻ መዳረሻ ይሰጣል።",
+            "error": "የማጋሪያ አገናኝ መፍጠር አልተሳካም"
+        },
+        "export": {
+            "report_title": "የZeaWatch ትንታኔ ሪፖርት",
+            "disease": "በሽታ",
+            "confidence": "እርግጠኝነት",
+            "date": "ቀን",
+            "desc": "መግለጫ",
+            "rec": "ምክር",
+            "field": "መስክ"
+        }
+    },
+    "map": {
+        "title": "የመስክ ካርታ",
+        "filters": {
+            "title": "ማጣሪያዎች",
+            "disease": "በሽታ",
+            "disease_placeholder": "በበሽታ አጣራ",
+            "date_from": "ከቀን",
+            "date_to": "እስከ ቀን",
+            "clear": "ማጣሪያዎችን አጽዳ"
+        },
+        "card": {
+            "title": "የመስክ ቦታዎች",
+            "desc": "የትንታኔዎችዎ የጂፒኤስ ቦታዎች። ጠቋሚዎች በበሽታ አይነት ቀለም የተቀቡ ናቸው።",
+            "no_data": "ምንም የቦታ ውሂብ ያላቸው ትንታኔዎች የሉም። በካርታው ላይ ለማየት ቅጠሎችን ሲተነትኑ ጂፒኤስን ያንቁ።",
+            "invalid_data": "የማይሰራ የቦታ ውሂብ"
+        },
+        "popup": {
+            "confidence": "እርግጠኝነት",
+            "date": "ቀን",
+            "field": "መስክ"
+        },
+        "regional": {
+            "title": "ክልላዊ የበሽታ ማጠቃለያ",
+            "desc": "በክልል የተጠቃለለ ውሂብ (የጂፒኤስ መጋጠሚያዎች ለግላዊነት ሲባል የተጠጋጉ)",
+            "region": "ክልል"
+        },
+        "legend": {
+            "title": "መፍቻ"
+        }
+    },
+    "auth": {
+        "signin": {
+            "title": "ይግቡ",
+            "subtitle": "እንኳን ደህና ተመለሱ! ወደ ZeaWatch መለያዎ ይግቡ",
+            "email": "ኢሜይል",
+            "password": "የይለፍ ቃል",
+            "remember_me": "አስታውሰኝ",
+            "forgot_password": "የይለፍ ቃል ረሱ?",
+            "button": "ይግቡ",
+            "button_loading": "በመግባት ላይ...",
+            "no_account": "መለያ የለዎትም?",
+            "create_account": "መለያ ይፍጠሩ",
+            "error_required": "ኢሜይል እና የይለፍ ቃል ያስፈልጋሉ",
+            "error_failed": "መግባት አልተሳካም"
+        },
+        "signup": {
+            "title": "መለያ ይፍጠሩ",
+            "subtitle": "የበቆሎ ቅጠል በሽታዎችን መለየት ለመጀመር ለZeaWatch ይመዝገቡ",
+            "name": "ስም",
+            "email": "ኢሜይል",
+            "password": "የይለፍ ቃል",
+            "confirm_password": "የይለፍ ቃል ያረጋግጡ",
+            "agree_terms": "በ",
+            "terms_link": "ውሎች እና ሁኔታዎች እስማማለሁ",
+            "button": "ይመዝገቡ",
+            "button_loading": "መለያ በመፍጠር ላይ...",
+            "has_account": "መለያ አለዎት?",
+            "signin_link": "ይግቡ",
+            "error_required": "ሁሉም መስኮች ያስፈልጋሉ",
+            "error_match": "የይለፍ ቃሎች አይዛመዱም",
+            "error_length": "የይለፍ ቃል ቢያንስ 6 ቁምፊዎች መሆን አለበት",
+            "error_terms": "በውሎች እና ሁኔታዎች መስማማት አለብዎት",
+            "error_failed": "መለያ መፍጠር አልተሳካም",
+            "success_message": "እባክዎ መለያዎን ለማረጋገጥ ኢሜይልዎን ያረጋግጡ"
+        }
+    }
+}

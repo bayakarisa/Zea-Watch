@@ -83,12 +83,23 @@ class HybridModel(nn.Module):
             raise FileNotFoundError(f"Model file not found: {model_path}")
 
         try:
+    def load_models(self):
+        """Load the fully-trained hybrid_model.pth state dict."""
+        model_path = os.getenv('MODEL_PATH', './models/hybrid_model.pth')
+        
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model file not found: {model_path}")
+
+        try:
             print(f"Loading trained weights from {model_path} ...")
+            # We map to device here to ensure weights load to GPU/CPU correctly
             state = torch.load(model_path, map_location=self.device)
             self.load_state_dict(state)
             print("✅ Weights loaded successfully.")
+            
         except Exception as e:
             print(f"❌ Failed loading weights: {e}")
+            # It is safer to raise the error than to run with an untrained model
             raise e
 
         self.eval()
@@ -147,8 +158,10 @@ class HybridModel(nn.Module):
         # ----------------------------
         # If no outputs, default
         # ----------------------------
+        # In your predict function
         if not all_probs:
-            return "Healthy", 0.85
+            # Return a distinct error state with 0 confidence
+            return "Error: Could not process image", 0.0        
 
         # Average ensemble
         final_probs = torch.stack(all_probs).mean(dim=0)

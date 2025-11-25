@@ -95,8 +95,8 @@ if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     debug_mode = os.getenv('ENVIRONMENT', 'development') != 'production'
 
-    print(f"🚀 Starting ZeaWatch API on port {port}")
-    print(f"🔧 Debug mode: {debug_mode}")
-    print(f"📁 Upload folder: {app.config['UPLOAD_FOLDER']}")
+    print(f"[INFO] Starting ZeaWatch API on port {port}")
+    print(f"[DEBUG] Debug mode: {debug_mode}")
+    print(f"[INFO] Upload folder: {app.config['UPLOAD_FOLDER']}")
 
     app.run(host='0.0.0.0', port=port, debug=debug_mode)

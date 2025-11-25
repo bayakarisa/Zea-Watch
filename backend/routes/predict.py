@@ -25,7 +25,7 @@ def allowed_file(filename):
 
 
 # -----------------------------------------------------------------------------
-# 🔐 OPTIONAL Supabase Authentication
+# OPTIONAL Supabase Authentication
 # -----------------------------------------------------------------------------
 from services.auth_service import AuthService
 
@@ -51,7 +51,7 @@ def get_user_id_from_token():
 
 
 # -----------------------------------------------------------------------------
-# 📸 Image analysis endpoint
+# Image analysis endpoint
 # -----------------------------------------------------------------------------
 @predict_bp.route('/analyze', methods=['POST'])
 def analyze():
@@ -60,16 +60,16 @@ def analyze():
     Guests allowed. If JWT is provided and valid → attach user_id.
     """
     # -----------------------------------------------------
-    # 🔐 Optional Auth
+    # Optional Auth
     # -----------------------------------------------------
     user_id = get_user_id_from_token()
     if user_id:
-        print(f"🔐 Authenticated user: {user_id}")
+        print(f"Authenticated user: {user_id}")
     else:
-        print("🟡 Guest user (no authentication)")
+        print("Guest user (no authentication)")
 
     # -----------------------------------------------------
-    # 📸 Get Image
+    # Get Image
     # -----------------------------------------------------
     if 'image' not in request.files:
         return jsonify({'error': 'No image provided'}), 400
@@ -90,14 +90,14 @@ def analyze():
         gemini_service = GeminiService()
 
         # -----------------------------------------------------
-        # 🔍 Step 1: Validate image is maize leaf
+        # Step 1: Validate image is maize leaf
         # -----------------------------------------------------
         is_valid, validation_message = gemini_service.validate_maize_leaf(image)
         if not is_valid:
             return jsonify({'error': validation_message}), 400
 
         # -----------------------------------------------------
-        # 🧠 Step 2: AI prediction
+        # Step 2: AI prediction
         # -----------------------------------------------------
         model = HybridModel()
         disease, raw_confidence = model.predict(image)
@@ -110,7 +110,7 @@ def analyze():
         normalized_confidence = confidence_service.validate_confidence(raw_confidence)
 
         # -----------------------------------------------------
-        # 💡 Step 3: AI description (Gemini)
+        # Step 3: AI description (Gemini)
         # -----------------------------------------------------
         description, recommendation = gemini_service.get_insights(
             disease,
@@ -119,7 +119,7 @@ def analyze():
         )
 
         # -----------------------------------------------------
-        # 💾 Step 4: Save image + prediction
+        # Step 4: Save image + prediction
         # -----------------------------------------------------
         filename = secure_filename(file.filename)
         upload_folder = current_app.config.get('UPLOAD_FOLDER', './static/uploads')
@@ -145,7 +145,7 @@ def analyze():
         )
 
         # -----------------------------------------------------
-        # ✅ Step 5: Return response
+        # Step 5: Return response
         # -----------------------------------------------------
         return jsonify({
             'id': str(result.get('id', '')),
@@ -161,6 +161,6 @@ def analyze():
 
     except Exception as e:
         import traceback
-        print("❌ Error analyzing image:", str(e))
+        print("Error analyzing image:", str(e))
         print(traceback.format_exc())
         return jsonify({'error': f"Failed to analyze image: {str(e)}"}), 500

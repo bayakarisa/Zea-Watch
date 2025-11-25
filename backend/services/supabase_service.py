@@ -25,7 +25,7 @@ class SupabaseService:
             raise ValueError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_KEY) must be set")
 
         self.supabase: Client = create_client(supabase_url, supabase_key)
-        print("✅ Supabase client initialized successfully")
+        print("[OK] Supabase client initialized successfully")
 
     # ---------------------------
     # Helper utilities
