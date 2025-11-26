@@ -23,7 +23,7 @@ def _parse_pagination():
     return limit, offset
 
 
-@recommendations_bp.route('/recommendations', methods=['GET'])
+@recommendations_bp.route('', methods=['GET'])
 @require_auth
 def list_my_recommendations():
     """Get recommendations for current user"""
@@ -46,7 +46,7 @@ def list_user_recommendations(user_id: str):
     return jsonify({'recommendations': recs, 'count': len(recs)}), 200
 
 
-@recommendations_bp.route('/recommendations', methods=['POST'])
+@recommendations_bp.route('', methods=['POST'])
 @require_admin
 def create_recommendation():
     """Admins can create recommendations for any user"""
@@ -76,7 +76,7 @@ def create_recommendation():
     return jsonify({'recommendation': record}), 201
 
 
-@recommendations_bp.route('/recommendations/<rec_id>', methods=['DELETE'])
+@recommendations_bp.route('/<rec_id>', methods=['DELETE'])
 @require_admin
 def delete_recommendation(rec_id: str):
     """Delete recommendation (admin only)"""

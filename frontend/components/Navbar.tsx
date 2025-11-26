@@ -13,8 +13,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/context/AuthContext'
+import { LanguageSelector } from '@/components/LanguageSelector'
+import { useTranslation } from 'react-i18next'
 
 export const Navbar: React.FC = () => {
+  const { t } = useTranslation('common')
   const { user, isLoading, logout } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
@@ -42,8 +45,10 @@ export const Navbar: React.FC = () => {
               className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/about') ? 'text-primary' : 'text-muted-foreground'
                 }`}
             >
-              About Us
+              {t('nav.about')}
             </Link>
+
+            <LanguageSelector />
 
             {isLoading ? (
               <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -59,22 +64,22 @@ export const Navbar: React.FC = () => {
                   <DropdownMenuItem asChild>
                     <Link href="/profile" className="cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
-                      Profile
+                      {t('nav.profile')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard" className="cursor-pointer">
-                      Dashboard
+                      {t('nav.dashboard')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/history" className="cursor-pointer">
-                      History
+                      {t('nav.history')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/map" className="cursor-pointer">
-                      Map
+                      {t('nav.map')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -86,17 +91,17 @@ export const Navbar: React.FC = () => {
                     className="cursor-pointer text-destructive"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
-                    Sign Out
+                    {t('nav.signout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <div className="flex items-center gap-3">
                 <Button variant="ghost" asChild>
-                  <Link href="/login">Sign In</Link>
+                  <Link href="/login">{t('nav.signin')}</Link>
                 </Button>
                 <Button asChild>
-                  <Link href="/signup">Sign Up</Link>
+                  <Link href="/signup">{t('nav.signup', 'Sign Up')}</Link>
                 </Button>
               </div>
             )}
@@ -122,8 +127,13 @@ export const Navbar: React.FC = () => {
               className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary"
               onClick={() => setMobileMenuOpen(false)}
             >
-              About Us
+              {t('nav.about')}
             </Link>
+
+            <div className="px-3 py-2">
+              <LanguageSelector />
+            </div>
+
             {user ? (
               <>
                 <Link
@@ -131,28 +141,28 @@ export const Navbar: React.FC = () => {
                   className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Profile
+                  {t('nav.profile')}
                 </Link>
                 <Link
                   href="/dashboard"
                   className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Dashboard
+                  {t('nav.dashboard')}
                 </Link>
                 <Link
                   href="/history"
                   className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  History
+                  {t('nav.history')}
                 </Link>
                 <Link
                   href="/map"
                   className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Map
+                  {t('nav.map')}
                 </Link>
                 <button
                   onClick={async () => {
@@ -162,19 +172,19 @@ export const Navbar: React.FC = () => {
                   }}
                   className="block w-full text-left px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10"
                 >
-                  Sign Out
+                  {t('nav.signout')}
                 </button>
               </>
             ) : (
               <div className="flex flex-col gap-2 px-3">
                 <Button variant="ghost" asChild>
                   <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                    Sign In
+                    {t('nav.signin')}
                   </Link>
                 </Button>
                 <Button asChild>
                   <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
-                    Sign Up
+                    {t('nav.signup', 'Sign Up')}
                   </Link>
                 </Button>
               </div>
@@ -185,4 +195,3 @@ export const Navbar: React.FC = () => {
     </nav>
   )
 }
-

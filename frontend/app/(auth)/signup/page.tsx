@@ -13,8 +13,10 @@ import { Footer } from '@/components/Footer'
 import { signUp } from '@/lib/auth'
 import { migrateGuestAnalyses } from '@/utils/api'
 import { AlertCircle, Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export default function SignUpPage() {
+  const { t } = useTranslation('common')
   const router = useRouter()
   const [formData, setFormData] = useState({
     name: '',
@@ -32,22 +34,22 @@ export default function SignUpPage() {
 
     // Validation
     if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-      setError('All fields are required')
+      setError(t('auth.signup.error_required'))
       return
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match')
+      setError(t('auth.signup.error_match'))
       return
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters')
+      setError(t('auth.signup.error_length'))
       return
     }
 
     if (!formData.agreeToTerms) {
-      setError('You must agree to the Terms and Conditions')
+      setError(t('auth.signup.error_terms'))
       return
     }
 
@@ -55,7 +57,7 @@ export default function SignUpPage() {
 
     try {
       const { data } = await signUp(formData.email, formData.password, formData.name)
-      
+
       // If user is created, migrate guest analyses
       if (data?.user?.id) {
         try {
@@ -65,11 +67,11 @@ export default function SignUpPage() {
           // Don't fail signup if migration fails
         }
       }
-      
+
       // Redirect to sign in page with success message
-      router.push('/signin?message=Please check your email to verify your account')
+      router.push(`/signin?message=${encodeURIComponent(t('auth.signup.success_message'))}`)
     } catch (err: any) {
-      setError(err.message || 'Failed to create account')
+      setError(err.message || t('auth.signup.error_failed'))
     } finally {
       setLoading(false)
     }
@@ -81,9 +83,9 @@ export default function SignUpPage() {
       <main className="flex-1 flex items-center justify-center px-4 py-12">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-2xl">Create an Account</CardTitle>
+            <CardTitle className="text-2xl">{t('auth.signup.title')}</CardTitle>
             <CardDescription>
-              Sign up for ZeaWatch to start detecting maize leaf diseases
+              {t('auth.signup.subtitle')}
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
@@ -96,7 +98,7 @@ export default function SignUpPage() {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">{t('auth.signup.name')}</Label>
                 <Input
                   id="name"
                   type="text"
@@ -108,7 +110,7 @@ export default function SignUpPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('auth.signup.email')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -120,7 +122,7 @@ export default function SignUpPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('auth.signup.password')}</Label>
                 <Input
                   id="password"
                   type="password"
@@ -133,7 +135,7 @@ export default function SignUpPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">{t('auth.signup.confirm_password')}</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
@@ -157,9 +159,9 @@ export default function SignUpPage() {
                   htmlFor="terms"
                   className="text-sm font-normal cursor-pointer"
                 >
-                  I agree to the{' '}
+                  {t('auth.signup.agree_terms')}{' '}
                   <Link href="/about?tab=terms" className="text-primary hover:underline">
-                    Terms and Conditions
+                    {t('auth.signup.terms_link')}
                   </Link>
                 </Label>
               </div>
@@ -173,16 +175,16 @@ export default function SignUpPage() {
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating account...
+                    {t('auth.signup.button_loading')}
                   </>
                 ) : (
-                  'Sign Up'
+                  t('auth.signup.button')
                 )}
               </Button>
               <p className="text-sm text-center text-muted-foreground">
-                Already have an account?{' '}
+                {t('auth.signup.has_account')}{' '}
                 <Link href="/signin" className="text-primary hover:underline">
-                  Sign In
+                  {t('auth.signup.signin_link')}
                 </Link>
               </p>
             </CardFooter>

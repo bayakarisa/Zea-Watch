@@ -5,7 +5,7 @@ from services.auth_service import require_auth
 history_bp = Blueprint('history', __name__)
 db_service = SupabaseService()
 
-@history_bp.route('/history', methods=['GET'])
+@history_bp.route('', methods=['GET'])
 @require_auth
 def get_history():
     """Get history for the authenticated user"""
@@ -23,7 +23,7 @@ def get_history():
         print(f"Error fetching history: {str(e)}")
         return jsonify({'error': f'Failed to fetch history: {str(e)}'}), 500
 
-@history_bp.route('/history/<id>', methods=['DELETE'])
+@history_bp.route('/<id>', methods=['DELETE'])
 @require_auth
 def delete_history(id):
     """Delete a history item"""

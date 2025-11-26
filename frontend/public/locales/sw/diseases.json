@@ -1,0 +1,28 @@
+{
+    "maize": {
+        "northern_leaf_blight": {
+            "name": "Baka Jani la Kaskazini",
+            "description": "Ugonjwa wa fangasi unaosababisha mabaka marefu ya kijivu kwenye majani.",
+            "recommendation": "Tumia mbegu zinazostahimili ugonjwa na kuzungusha mazao."
+        },
+        "common_rust": {
+            "name": "Kutu ya Mahindi",
+            "description": "Viupele vidogo vya rangi ya kahawia pande zote za jani.",
+            "recommendation": "Nyunyizia dawa ya ukungu mapema dalili zinapoonekana."
+        },
+        "gray_leaf_spot": {
+            "name": "Baka Jani la Kijivu",
+            "description": "Mabaka ya mstatili yanayofuata mishipa ya jani.",
+            "recommendation": "Ondoa mabaki ya mazao yaliyoathirika shambani."
+        },
+        "healthy": {
+            "name": "Afya Njema",
+            "description": "Mmea unaonekana kuwa na afya bila dalili za ugonjwa.",
+            "recommendation": "Endelea na utunzaji bora wa shamba."
+        }
+    },
+    "status": {
+        "needs_review": "Inahitaji Uhakiki",
+        "verified": "Imethibitishwa"
+    }
+}

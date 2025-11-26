@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Loader2, UploadCloud, Trash2, FileText, Sparkles } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { deleteUpload, fetchRecommendations, fetchUploads, uploadFile } from '@/lib/dashboardApi'
+import { useTranslation } from 'react-i18next'
 
 interface UploadRecord {
   id: string
@@ -32,6 +33,7 @@ interface RecommendationRecord {
 }
 
 export default function DashboardPage() {
+  const { t } = useTranslation('common')
   const router = useRouter()
   const { user, isLoading: authLoading } = useAuth()
   const [uploads, setUploads] = useState<UploadRecord[]>([])
@@ -73,7 +75,7 @@ export default function DashboardPage() {
   const handleUpload = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (!file) {
-      setError('Choose a file to upload')
+      setError(t('dashboard.upload.error_no_file'))
       return
     }
     try {
@@ -94,7 +96,7 @@ export default function DashboardPage() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this upload?')) return
+    if (!confirm(t('dashboard.uploads.confirm_delete'))) return
     try {
       await deleteUpload(id)
       setUploads((prev) => prev.filter((upload) => upload.id !== id))
@@ -120,10 +122,10 @@ export default function DashboardPage() {
       <Navbar />
       <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-6xl space-y-8">
         <div className="flex flex-col gap-2">
-          <p className="text-sm text-muted-foreground">Welcome back</p>
+          <p className="text-sm text-muted-foreground">{t('dashboard.welcome_back')}</p>
           <h1 className="text-3xl font-bold text-foreground">{formattedUserName}</h1>
           <p className="text-muted-foreground">
-            Track your uploads, view personalized recommendations, and manage your ZeaWatch account.
+            {t('dashboard.subtitle')}
           </p>
         </div>
 
@@ -136,8 +138,8 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           <Card>
             <CardHeader>
-              <CardTitle>Uploads</CardTitle>
-              <CardDescription>Total files you have uploaded</CardDescription>
+              <CardTitle>{t('dashboard.stats.uploads')}</CardTitle>
+              <CardDescription>{t('dashboard.stats.uploads_desc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold">{uploads.length}</p>
@@ -145,8 +147,8 @@ export default function DashboardPage() {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>Recommendations</CardTitle>
-              <CardDescription>Insights generated for you</CardDescription>
+              <CardTitle>{t('dashboard.stats.recommendations')}</CardTitle>
+              <CardDescription>{t('dashboard.stats.recommendations_desc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold">{recommendations.length}</p>
@@ -154,8 +156,8 @@ export default function DashboardPage() {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>Account role</CardTitle>
-              <CardDescription>Your access level</CardDescription>
+              <CardTitle>{t('dashboard.stats.role')}</CardTitle>
+              <CardDescription>{t('dashboard.stats.role_desc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Badge variant="secondary" className="text-base capitalize">
@@ -167,8 +169,8 @@ export default function DashboardPage() {
 
         <Card id="uploads">
           <CardHeader>
-            <CardTitle>Upload new data</CardTitle>
-            <CardDescription>Attach new imagery or files for your agronomic records.</CardDescription>
+            <CardTitle>{t('dashboard.upload.title')}</CardTitle>
+            <CardDescription>{t('dashboard.upload.desc')}</CardDescription>
           </CardHeader>
           <CardContent>
             <form className="flex flex-col gap-4 md:flex-row md:items-center" onSubmit={handleUpload}>
@@ -182,28 +184,28 @@ export default function DashboardPage() {
                 {uploading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Uploading...
+                    {t('dashboard.upload.uploading')}
                   </>
                 ) : (
                   <>
                     <UploadCloud className="mr-2 h-4 w-4" />
-                    Upload file
+                    {t('dashboard.upload.button')}
                   </>
                 )}
               </Button>
             </form>
-            <p className="mt-2 text-xs text-muted-foreground">Max size 5MB. Accepted formats: images, PDF, ZIP.</p>
+            <p className="mt-2 text-xs text-muted-foreground">{t('dashboard.upload.help_text')}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>My uploads</CardTitle>
-            <CardDescription>Only you (and admins) can see these files.</CardDescription>
+            <CardTitle>{t('dashboard.uploads.title')}</CardTitle>
+            <CardDescription>{t('dashboard.uploads.desc')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {uploads.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No uploads yet. Start by adding a file above.</p>
+              <p className="text-sm text-muted-foreground">{t('messages.no_uploads')}</p>
             ) : (
               <div className="space-y-3">
                 {uploads.map((upload) => (
@@ -217,14 +219,14 @@ export default function DashboardPage() {
                         <p className="font-medium">{upload.filename}</p>
                         <p className="text-xs text-muted-foreground">
                           {new Date(upload.created_at).toLocaleString()} ·{' '}
-                          {upload.file_size ? `${(upload.file_size / 1024).toFixed(1)} KB` : 'size unknown'}
+                          {upload.file_size ? `${(upload.file_size / 1024).toFixed(1)} KB` : t('dashboard.uploads.size_unknown')}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       <Button variant="outline" size="sm" asChild>
                         <a href={upload.storage_path} target="_blank" rel="noopener noreferrer">
-                          View
+                          {t('actions.view')}
                         </a>
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => handleDelete(upload.id)}>
@@ -240,12 +242,12 @@ export default function DashboardPage() {
 
         <Card id="recommendations">
           <CardHeader>
-            <CardTitle>Recommendations</CardTitle>
-            <CardDescription>Personalized insights generated for your farm.</CardDescription>
+            <CardTitle>{t('dashboard.recommendations.title')}</CardTitle>
+            <CardDescription>{t('dashboard.recommendations.desc')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {recommendations.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No recommendations available yet.</p>
+              <p className="text-sm text-muted-foreground">{t('messages.no_recommendations')}</p>
             ) : (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {recommendations.map((rec) => (
@@ -254,11 +256,11 @@ export default function DashboardPage() {
                       <Sparkles className="h-4 w-4 text-primary" />
                       <p className="text-sm font-semibold capitalize">{rec.recommendation_type}</p>
                       {rec.score !== undefined && (
-                        <Badge variant="outline">Score: {Number(rec.score).toFixed(1)}</Badge>
+                        <Badge variant="outline">{t('dashboard.recommendations.score')} {Number(rec.score).toFixed(1)}</Badge>
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      {rec.summary || rec.content?.message || 'See detailed content below.'}
+                      {rec.summary || rec.content?.message || t('dashboard.recommendations.see_details')}
                     </p>
                     {rec.content && (
                       <pre className="mt-3 max-h-40 overflow-auto rounded bg-muted/50 p-2 text-xs">
@@ -266,7 +268,7 @@ export default function DashboardPage() {
                       </pre>
                     )}
                     <p className="mt-3 text-xs text-muted-foreground">
-                      Generated {new Date(rec.created_at).toLocaleString()}
+                      {t('dashboard.recommendations.generated')} {new Date(rec.created_at).toLocaleString()}
                     </p>
                   </div>
                 ))}
