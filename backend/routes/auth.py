@@ -45,7 +45,7 @@ def validate_email(email: str) -> bool:
     return re.match(pattern, email) is not None
 
 
-@auth_bp.route('/auth/register', methods=['POST'])
+@auth_bp.route('/register', methods=['POST'])
 @apply_rate_limit("5 per minute")
 def register():
     """Register a new user"""
@@ -138,7 +138,7 @@ def register():
         }), 500
 
 
-@auth_bp.route('/auth/verify', methods=['GET'])
+@auth_bp.route('/verify', methods=['GET'])
 def verify_email():
     """Verify email address"""
     token = request.args.get('token')
@@ -193,7 +193,7 @@ def verify_email():
     }), 500
 
 
-@auth_bp.route('/auth/login', methods=['POST'])
+@auth_bp.route('/login', methods=['POST'])
 @apply_rate_limit("10 per minute")
 def login():
     """Login user"""
@@ -276,7 +276,7 @@ def login():
         }), 500
 
 
-@auth_bp.route('/auth/refresh', methods=['POST'])
+@auth_bp.route('/refresh', methods=['POST'])
 def refresh_token():
     """Refresh access token"""
     try:
@@ -320,7 +320,7 @@ def refresh_token():
         }), 500
 
 
-@auth_bp.route('/auth/forgot', methods=['POST'])
+@auth_bp.route('/forgot', methods=['POST'])
 @apply_rate_limit("3 per hour")
 def forgot_password():
     """Request password reset"""
@@ -356,7 +356,7 @@ def forgot_password():
         }), 500
 
 
-@auth_bp.route('/auth/reset', methods=['POST'])
+@auth_bp.route('/reset', methods=['POST'])
 def reset_password():
     """Reset password with token"""
     try:
@@ -412,7 +412,7 @@ def reset_password():
         }), 500
 
 
-@auth_bp.route('/auth/me', methods=['GET'])
+@auth_bp.route('/me', methods=['GET'])
 @require_auth_decorator
 def get_current_user():
     """Get current authenticated user"""

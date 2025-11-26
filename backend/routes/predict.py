@@ -17,6 +17,12 @@ predict_bp = Blueprint('predict', __name__)
 confidence_service = ConfidenceService()
 db_service = SupabaseService()
 
+# Initialize model ONCE when the blueprint loads (not on every request)
+# This saves 2-3 seconds per request!
+print("Initializing HybridModel...")
+model = HybridModel()
+print("HybridModel ready for predictions")
+
 # Allowed file types
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
@@ -97,16 +103,27 @@ def analyze():
             return jsonify({'error': validation_message}), 400
 
         # -----------------------------------------------------
-        # Step 2: AI prediction
+        # Step 2: AI prediction (using pre-loaded global model)
         # -----------------------------------------------------
-        model = HybridModel()
-        disease, raw_confidence = model.predict(image)
+        # Use the predict_with_probabilities method for detailed results
+        prediction_result = model.predict_with_probabilities(image)
+        
+        disease = prediction_result['disease']
+        raw_confidence = prediction_result['confidence']
+        all_probabilities = prediction_result['all_probabilities']
+        confidence_level = prediction_result['confidence_level']
+        model_accuracy = prediction_result['model_accuracy']
 
+        # Store raw scores for database
         raw_scores = {
             'confidence': float(raw_confidence),
-            'model_output': 'hybrid_cnn_vit'
+            'all_probabilities': all_probabilities,
+            'confidence_level': confidence_level,
+            'model_output': 'hybrid_cnn_vit',
+            'model_accuracy': model_accuracy
         }
 
+        # Normalize confidence using your confidence service
         normalized_confidence = confidence_service.validate_confidence(raw_confidence)
 
         # -----------------------------------------------------
@@ -144,19 +161,30 @@ def analyze():
             recommendation=recommendation
         )
 
+        # Get treatment recommendations from model
+        treatment = model.get_treatment_recommendation(disease)
+
         # -----------------------------------------------------
-        # Step 5: Return response
+        # Step 5: Return enhanced response
         # -----------------------------------------------------
         return jsonify({
             'id': str(result.get('id', '')),
             'disease': disease,
             'confidence': normalized_confidence,
+            'confidence_level': confidence_level,
             'confidence_display': confidence_service.format_confidence_for_display(normalized_confidence),
+            'all_probabilities': all_probabilities,
             'description': description,
             'recommendation': recommendation,
+            'treatment': treatment,
             'image_url': image_url,
             'created_at': result.get('created_at'),
-            'user_id': user_id or "guest"
+            'user_id': user_id or "guest",
+            'model_info': {
+                'version': model_version,
+                'accuracy': model_accuracy,
+                'type': 'Hybrid CNN + Vision Transformer'
+            }
         }), 200
 
     except Exception as e:
@@ -164,3 +192,93 @@ def analyze():
         print("Error analyzing image:", str(e))
         print(traceback.format_exc())
         return jsonify({'error': f"Failed to analyze image: {str(e)}"}), 500
+
+
+# -----------------------------------------------------------------------------
+# Health check endpoint
+# -----------------------------------------------------------------------------
+@predict_bp.route('/predict/health', methods=['GET'])
+def health_check():
+    """Check if the model is loaded and ready"""
+    try:
+        # Try a simple prediction to verify model is working
+        test_image = Image.new('RGB', (224, 224), color='green')
+        disease, confidence = model.predict(test_image)
+        
+        return jsonify({
+            'status': 'healthy',
+            'model_loaded': True,
+            'device': str(model.device),
+            'classes': model.disease_classes,
+            'test_prediction': {
+                'disease': disease,
+                'confidence': confidence
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'unhealthy',
+            'model_loaded': False,
+            'error': str(e)
+        }), 500
+
+
+# -----------------------------------------------------------------------------
+# Batch prediction endpoint (optional - for testing multiple images)
+# -----------------------------------------------------------------------------
+@predict_bp.route('/predict/batch', methods=['POST'])
+def batch_predict():
+    """
+    Handle multiple image uploads for batch prediction
+    Useful for testing or admin purposes
+    """
+    user_id = get_user_id_from_token()
+    
+    if 'images' not in request.files:
+        return jsonify({'error': 'No images provided'}), 400
+    
+    files = request.files.getlist('images')
+    
+    if len(files) == 0:
+        return jsonify({'error': 'No files selected'}), 400
+    
+    results = []
+    
+    for file in files:
+        if not allowed_file(file.filename):
+            results.append({
+                'filename': file.filename,
+                'error': 'Invalid file type'
+            })
+            continue
+        
+        try:
+            # Load and predict
+            image_bytes = file.read()
+            image = Image.open(io.BytesIO(image_bytes))
+            if image.mode != 'RGB':
+                image = image.convert('RGB')
+            
+            # Get prediction with probabilities
+            prediction_result = model.predict_with_probabilities(image)
+            
+            results.append({
+                'filename': file.filename,
+                'disease': prediction_result['disease'],
+                'confidence': prediction_result['confidence'],
+                'confidence_level': prediction_result['confidence_level'],
+                'all_probabilities': prediction_result['all_probabilities']
+            })
+            
+        except Exception as e:
+            results.append({
+                'filename': file.filename,
+                'error': str(e)
+            })
+    
+    return jsonify({
+        'total': len(files),
+        'successful': len([r for r in results if 'error' not in r]),
+        'failed': len([r for r in results if 'error' in r]),
+        'results': results
+    }), 200

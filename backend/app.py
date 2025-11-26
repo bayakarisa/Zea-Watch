@@ -27,7 +27,7 @@ limiter = init_rate_limiter(app)
 # Configuration
 app.config['UPLOAD_FOLDER'] = os.getenv('UPLOAD_FOLDER', './static/uploads')
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB max file size
-app.config['MODEL_PATH'] = os.getenv('MODEL_PATH', './models/hybrid_model.pth')
+app.config['MODEL_PATH'] = os.getenv('MODEL_PATH', './models/hybrid_model_balanced.pth')  # FIXED: Updated model name
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-change-this-in-production-use-long-random-string')
 app.config['SESSION_COOKIE_SECURE'] = os.getenv('ENVIRONMENT', 'development') == 'production'
 
@@ -48,13 +48,13 @@ from routes.auth import set_limiter
 set_limiter(limiter)
 
 # Register blueprints with /api prefix
-app.register_blueprint(predict_bp, url_prefix='/api')
-app.register_blueprint(history_bp, url_prefix='/api')
-app.register_blueprint(auth_bp, url_prefix='/api')
-app.register_blueprint(admin_bp, url_prefix='/api')
-app.register_blueprint(subscriptions_bp, url_prefix='/api')
-app.register_blueprint(uploads_bp, url_prefix='/api')
-app.register_blueprint(recommendations_bp, url_prefix='/api')
+app.register_blueprint(predict_bp, url_prefix='/api')  # FIXED: Root API prefix for analyze endpoint
+app.register_blueprint(history_bp, url_prefix='/api/history')
+app.register_blueprint(auth_bp, url_prefix='/api/auth')
+app.register_blueprint(admin_bp, url_prefix='/api/admin')
+app.register_blueprint(subscriptions_bp, url_prefix='/api/subscriptions')
+app.register_blueprint(uploads_bp, url_prefix='/api/uploads')
+app.register_blueprint(recommendations_bp, url_prefix='/api/recommendations')
 
 # Health check routes
 @app.route('/')
@@ -65,7 +65,7 @@ def health_check():
 @app.route('/api/health')
 def api_health():
     """API health check endpoint"""
-    return {'status': 'ok', 'service': 'ZeaWatch API'}
+    return {'status': 'ok', 'service': 'ZeaWatch API', 'version': '1.0.0'}
 
 @app.route('/static/uploads/<filename>')
 def uploaded_file(filename):
@@ -73,16 +73,17 @@ def uploaded_file(filename):
     upload_folder = app.config['UPLOAD_FOLDER']
     return send_from_directory(upload_folder, filename)
 
-# Error handlers
+# Error handlers (FIXED: Removed emoji for Windows compatibility)
 @app.errorhandler(404)
 def not_found(error):
     """Handle 404 errors"""
-    print(f"❌ 404 Error: {request.url}")
+    print(f"[404] Resource not found: {request.url}")  # FIXED: No emoji
     return {'error': f'Resource not found: {request.url}'}, 404
 
 @app.errorhandler(500)
 def internal_error(error):
     """Handle 500 errors"""
+    print(f"[500] Internal server error: {str(error)}")  # FIXED: No emoji
     return {'error': 'Internal server error'}, 500
 
 @app.errorhandler(413)
@@ -98,5 +99,6 @@ if __name__ == '__main__':
     print(f"[INFO] Starting ZeaWatch API on port {port}")
     print(f"[DEBUG] Debug mode: {debug_mode}")
     print(f"[INFO] Upload folder: {app.config['UPLOAD_FOLDER']}")
+    print(f"[INFO] Model path: {app.config['MODEL_PATH']}")
 
     app.run(host='0.0.0.0', port=port, debug=debug_mode)

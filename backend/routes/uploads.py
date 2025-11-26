@@ -27,7 +27,7 @@ def _parse_pagination():
     return limit, offset
 
 
-@uploads_bp.route('/uploads', methods=['GET'])
+@uploads_bp.route('', methods=['GET'])
 @require_auth
 def list_my_uploads():
     """Return uploads belonging to the authenticated user"""
@@ -37,7 +37,7 @@ def list_my_uploads():
     return jsonify({'uploads': uploads, 'count': len(uploads)}), 200
 
 
-@uploads_bp.route('/uploads', methods=['POST'])
+@uploads_bp.route('', methods=['POST'])
 @require_auth
 def create_upload():
     """Upload a file and create metadata record"""
@@ -84,7 +84,7 @@ def create_upload():
         return jsonify({'code': 'UPLOAD_FAILED', 'message': str(e)}), 500
 
 
-@uploads_bp.route('/uploads/<upload_id>', methods=['DELETE'])
+@uploads_bp.route('/<upload_id>', methods=['DELETE'])
 @require_auth
 def delete_upload(upload_id: str):
     """Delete upload if owned by user (or caller is admin)"""
