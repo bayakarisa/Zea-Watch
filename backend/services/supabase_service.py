@@ -25,7 +25,8 @@ class SupabaseService:
             raise ValueError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_KEY) must be set")
 
         self.supabase: Client = create_client(supabase_url, supabase_key)
-        print("[OK] Supabase client initialized successfully")
+        key_type = "SERVICE_ROLE" if supabase_key == os.getenv('SUPABASE_SERVICE_ROLE_KEY') else "ANON/OTHER"
+        print(f"[OK] Supabase client initialized successfully. URL: {supabase_url[:10]}... Key Type: {key_type}")
 
     # ---------------------------
     # Helper utilities
@@ -290,7 +291,7 @@ class SupabaseService:
     def get_prediction_by_id(self, prediction_id: str) -> Optional[Dict]:
         """Get a single prediction by id"""
         try:
-            result = self.supabase.table('predictions').select('*').eq('id', prediction_id).limit(1).execute()
+            result = self.supabase.table('analyses').select('*').eq('id', prediction_id).limit(1).execute()
             if result.data and len(result.data) > 0:
                 return result.data[0]
             return None
@@ -318,13 +319,13 @@ class SupabaseService:
                             filters: Optional[Dict] = None) -> List[Dict]:
         """Get all predictions (admin)"""
         try:
-            query = self.supabase.table('predictions').select('*')
+            query = self.supabase.table('analyses').select('*')
 
             if filters:
                 if filters.get('user_id'):
                     query = query.eq('user_id', filters['user_id'])
                 if filters.get('label'):
-                    query = query.ilike('label', f"%{filters['label']}%")
+                    query = query.ilike('disease', f"%{filters['label']}%")
 
             result = query.order('created_at', desc=True).limit(limit).offset(offset).execute()
             return result.data if result.data else []
@@ -346,7 +347,7 @@ class SupabaseService:
         """Get predictions created in the last `days` days"""
         try:
             cutoff = (datetime.utcnow() - timedelta(days=days)).isoformat()
-            res = self.supabase.table('predictions').select('*').gt('created_at', cutoff).order('created_at', desc=True).execute()
+            res = self.supabase.table('analyses').select('*').gt('created_at', cutoff).order('created_at', desc=True).execute()
             return res.data if res.data else []
         except Exception as e:
             print(f"Error in get_recent_predictions: {e}")
@@ -357,7 +358,7 @@ class SupabaseService:
         try:
             # This naive approach pulls data and aggregates in Python
             cutoff = (datetime.utcnow() - timedelta(days=last_n_days)).isoformat()
-            res = self.supabase.table('predictions').select('created_at').gt('created_at', cutoff).execute()
+            res = self.supabase.table('analyses').select('created_at').gt('created_at', cutoff).execute()
             if not res.data:
                 return []
             counts = {}
@@ -598,55 +599,90 @@ class SupabaseService:
             return []
 
     def get_admin_stats(self) -> Dict:
-        """Get admin statistics"""
+        """Get admin statistics (legacy)"""
+        return self.get_admin_stats_safe()
+
+    def get_admin_stats_safe(self) -> Dict:
+        """Get admin statistics with robust error handling"""
+        stats = {
+            'total_users': 0,
+            'verified_users': 0,
+            'active_subscriptions': 0,
+            'total_predictions': 0,
+            'total_uploads': 0,
+            'total_recommendations': 0,
+            'avg_confidence': 0.0,
+            'subscription_breakdown': {}
+        }
+        
+        print("[DEBUG] Starting get_admin_stats_safe")
+
+        # 1. Users
         try:
-            stats = {}
-
-            # Total users
-            users_result = self.supabase.table('users').select('id', count='exact').execute()
-            stats['total_users'] = users_result.count if hasattr(users_result, 'count') else 0
-
-            # Verified users
-            verified_result = self.supabase.table('users').select('id', count='exact').eq('verified', True).execute()
-            stats['verified_users'] = verified_result.count if hasattr(verified_result, 'count') else 0
-
-            # Active subscriptions
-            subs_result = self.supabase.table('subscriptions').select('id', count='exact').eq('status', 'active').execute()
-            stats['active_subscriptions'] = subs_result.count if hasattr(subs_result, 'count') else 0
-
-            # Total predictions
-            preds_result = self.supabase.table('predictions').select('id', count='exact').execute()
-            stats['total_predictions'] = preds_result.count if hasattr(preds_result, 'count') else 0
-
-            # Total uploads
-            uploads_result = self.supabase.table('uploads').select('id', count='exact').execute()
-            stats['total_uploads'] = uploads_result.count if hasattr(uploads_result, 'count') else 0
-
-            # Total recommendations
-            recs_result = self.supabase.table('recommendations').select('id', count='exact').execute()
-            stats['total_recommendations'] = recs_result.count if hasattr(recs_result, 'count') else 0
-
-            # Average confidence - need to calculate manually
-            all_preds = self.supabase.table('predictions').select('confidence').execute()
-            if all_preds.data:
-                confidences = [float(p['confidence']) for p in all_preds.data if p.get('confidence') is not None]
-                stats['avg_confidence'] = (sum(confidences) / len(confidences)) if confidences else 0.0
-            else:
-                stats['avg_confidence'] = 0.0
-
-            # Subscription breakdown
-            users = self.supabase.table('users').select('subscription_tier').execute()
-            breakdown = {}
-            if users.data:
-                for user in users.data:
-                    tier = user.get('subscription_tier', 'free')
-                    breakdown[tier] = breakdown.get(tier, 0) + 1
-            stats['subscription_breakdown'] = breakdown
-
-            return stats
+            res = self.supabase.table('users').select('id', count='exact').execute()
+            stats['total_users'] = res.count if hasattr(res, 'count') else 0
         except Exception as e:
-            print(f"Error getting admin stats: {e}")
-            return {}
+            print(f"[ERROR] Failed to get users count: {e}")
+
+        # 2. Verified Users
+        try:
+            res = self.supabase.table('users').select('id', count='exact').eq('verified', True).execute()
+            stats['verified_users'] = res.count if hasattr(res, 'count') else 0
+        except Exception as e:
+            print(f"[ERROR] Failed to get verified users: {e}")
+
+        # 3. Active Subscriptions
+        try:
+            res = self.supabase.table('subscriptions').select('id', count='exact').eq('status', 'active').execute()
+            stats['active_subscriptions'] = res.count if hasattr(res, 'count') else 0
+        except Exception as e:
+            print(f"[ERROR] Failed to get active subscriptions: {e}")
+
+        # 4. Predictions (Analyses)
+        try:
+            res = self.supabase.table('analyses').select('id', count='exact').execute()
+            stats['total_predictions'] = res.count if hasattr(res, 'count') else 0
+        except Exception as e:
+            print(f"[ERROR] Failed to get analyses count: {e}")
+
+        # 5. Uploads
+        try:
+            res = self.supabase.table('uploads').select('id', count='exact').execute()
+            stats['total_uploads'] = res.count if hasattr(res, 'count') else 0
+        except Exception as e:
+            print(f"[ERROR] Failed to get uploads count: {e}")
+
+        # 6. Recommendations
+        try:
+            res = self.supabase.table('recommendations').select('id', count='exact').execute()
+            stats['total_recommendations'] = res.count if hasattr(res, 'count') else 0
+        except Exception as e:
+            print(f"[ERROR] Failed to get recommendations count: {e}")
+
+        # 7. Avg Confidence
+        try:
+            res = self.supabase.table('analyses').select('confidence').execute()
+            if res.data:
+                confs = [float(x['confidence']) for x in res.data if x.get('confidence') is not None]
+                if confs:
+                    stats['avg_confidence'] = sum(confs) / len(confs)
+        except Exception as e:
+            print(f"[ERROR] Failed to get avg confidence: {e}")
+
+        # 8. Subscription Breakdown
+        try:
+            res = self.supabase.table('users').select('subscription_tier').execute()
+            breakdown = {}
+            if res.data:
+                for u in res.data:
+                    t = u.get('subscription_tier', 'free')
+                    breakdown[t] = breakdown.get(t, 0) + 1
+            stats['subscription_breakdown'] = breakdown
+        except Exception as e:
+            print(f"[ERROR] Failed to get sub breakdown: {e}")
+
+        print(f"[DEBUG] Returning safe stats: {stats}")
+        return stats
 
     # ========================================================================
     # AUDIT LOGS

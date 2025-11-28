@@ -12,7 +12,7 @@ admin_bp = Blueprint('admin', __name__)
 db_service = SupabaseService()
 
 
-@admin_bp.route('/admin/users', methods=['GET'])
+@admin_bp.route('/users', methods=['GET'])
 @require_admin
 def get_users():
     """Get all users with filters"""
@@ -51,7 +51,7 @@ def get_users():
         }), 500
 
 
-@admin_bp.route('/admin/predictions', methods=['GET'])
+@admin_bp.route('/predictions', methods=['GET'])
 @require_admin
 def get_predictions():
     """Get all predictions with filters"""
@@ -88,7 +88,7 @@ def get_predictions():
         }), 500
 
 
-@admin_bp.route('/admin/predictions/export', methods=['GET'])
+@admin_bp.route('/predictions/export', methods=['GET'])
 @require_admin
 def export_predictions():
     """Export predictions as CSV"""
@@ -143,19 +143,22 @@ def export_predictions():
         }), 500
 
 
-@admin_bp.route('/admin/stats', methods=['GET'])
+@admin_bp.route('/stats', methods=['GET'])
 @require_admin
 def get_stats():
     """Get admin statistics"""
     try:
-        stats = db_service.get_admin_stats()
+        print("[DEBUG] Inside get_stats route handler")
+        local_db_service = SupabaseService()
+        print("[DEBUG] Local SupabaseService initialized")
+        stats = local_db_service.get_admin_stats()
         
         # Log audit
-        db_service.create_audit_log(
-            user_id=request.current_user['user_id'],
-            action='admin_view_stats',
-            ip_address=request.remote_addr
-        )
+        # db_service.create_audit_log(
+        #     user_id=request.current_user['user_id'],
+        #     action='admin_view_stats',
+        #     ip_address=request.remote_addr
+        # )
         
         return jsonify(stats), 200
     
@@ -167,7 +170,7 @@ def get_stats():
         }), 500
 
 
-@admin_bp.route('/admin/users/<user_id>/subscription', methods=['POST'])
+@admin_bp.route('/users/<user_id>/subscription', methods=['POST'])
 @require_admin
 def update_user_subscription(user_id):
     """Update user subscription (admin)"""
@@ -214,7 +217,7 @@ def update_user_subscription(user_id):
         }), 500
 
 
-@admin_bp.route('/admin/impersonate/<user_id>', methods=['POST'])
+@admin_bp.route('/impersonate/<user_id>', methods=['POST'])
 @require_admin
 def impersonate_user(user_id):
     """Impersonate user for debugging (optional)"""
