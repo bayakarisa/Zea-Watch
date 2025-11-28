@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useAuth } from '@/context/AuthContext'
 
-export default function SignInPage() {
+function SignInContent() {
   const { t } = useTranslation('common')
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -180,6 +180,14 @@ export default function SignInPage() {
       </main>
       <Footer />
     </div>
+  )
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+      <SignInContent />
+    </Suspense>
   )
 }
 
