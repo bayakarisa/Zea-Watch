@@ -137,7 +137,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ onAnalysisComplete }) =>
 
   const handleCameraClick = () => {
     // Check if getUserMedia is available (modern browsers)
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
       setShowCamera(true)
     } else {
       // Fallback to file input with capture attribute for older browsers
