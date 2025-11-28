@@ -48,13 +48,24 @@ from routes.auth import set_limiter
 set_limiter(limiter)
 
 # Register blueprints with /api prefix
-app.register_blueprint(predict_bp, url_prefix='/api')  # FIXED: Root API prefix for analyze endpoint
-app.register_blueprint(history_bp, url_prefix='/api/history')
-app.register_blueprint(auth_bp, url_prefix='/api/auth')
-app.register_blueprint(admin_bp, url_prefix='/api/admin')
-app.register_blueprint(subscriptions_bp, url_prefix='/api/subscriptions')
-app.register_blueprint(uploads_bp, url_prefix='/api/uploads')
-app.register_blueprint(recommendations_bp, url_prefix='/api/recommendations')
+print("[DEBUG] Registering blueprints...")
+try:
+    app.register_blueprint(predict_bp, url_prefix='/api')
+    print("[DEBUG] Registered predict_bp")
+    app.register_blueprint(history_bp, url_prefix='/api/history')
+    print("[DEBUG] Registered history_bp")
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    print("[DEBUG] Registered auth_bp")
+    app.register_blueprint(admin_bp, url_prefix='/api/admin')
+    print("[DEBUG] Registered admin_bp")
+    app.register_blueprint(subscriptions_bp, url_prefix='/api/subscriptions')
+    print("[DEBUG] Registered subscriptions_bp")
+    app.register_blueprint(uploads_bp, url_prefix='/api/uploads')
+    print("[DEBUG] Registered uploads_bp")
+    app.register_blueprint(recommendations_bp, url_prefix='/api/recommendations')
+    print("[DEBUG] Registered recommendations_bp")
+except Exception as e:
+    print(f"[ERROR] Failed to register blueprints: {e}")
 
 # Health check routes
 @app.route('/')
@@ -66,6 +77,14 @@ def health_check():
 def api_health():
     """API health check endpoint"""
     return {'status': 'ok', 'service': 'ZeaWatch API', 'version': '1.0.0'}
+
+@app.route('/api/debug/routes')
+def debug_routes():
+    """List all registered routes"""
+    routes = []
+    for rule in app.url_map.iter_rules():
+        routes.append(str(rule))
+    return {'routes': routes}
 
 @app.route('/static/uploads/<filename>')
 def uploaded_file(filename):
@@ -101,4 +120,10 @@ if __name__ == '__main__':
     print(f"[INFO] Upload folder: {app.config['UPLOAD_FOLDER']}")
     print(f"[INFO] Model path: {app.config['MODEL_PATH']}")
 
-    app.run(host='0.0.0.0', port=port, debug=debug_mode)
+    print("\n--- Registered Routes ---")
+    for rule in app.url_map.iter_rules():
+        print(f"{rule} -> {rule.endpoint}")
+    print("-------------------------\n")
+
+    # Disable reloader to prevent WinError 10038 on Windows
+    app.run(host='0.0.0.0', port=port, debug=debug_mode, use_reloader=False)

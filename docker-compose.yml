@@ -14,23 +14,22 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-
+ 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
-    environment:
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_KEY=${SUPABASE_KEY}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - UPLOAD_FOLDER=/app/static/uploads
-      - MODEL_PATH=app/models/hybrid_model.pth
-    volumes:
-      - ./backend:/app
-      - uploads:/app/static/uploads
+  build:
+    context: ./backend
+    dockerfile: Dockerfile
+  ports:
+    - "5000:5000"
+  environment:
+    - SUPABASE_URL=${SUPABASE_URL}
+    - SUPABASE_KEY=${SUPABASE_KEY}
+    - GEMINI_API_KEY=${GEMINI_API_KEY}
+    - UPLOAD_FOLDER=/app/static/uploads
+    - MODEL_PATH=/app/models/hybrid_model_balanced.pth 
+  volumes:
+    - ./backend:/app
+    - uploads:/app/static/uploads
 
-volumes:
-  uploads:
+
 

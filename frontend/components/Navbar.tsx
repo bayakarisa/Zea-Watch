@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Leaf, User, LogOut, Menu, X, Loader2 } from 'lucide-react'
+import { Leaf, User, LogOut, Menu, X, Loader2, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next'
 
 export const Navbar: React.FC = () => {
   const { t } = useTranslation('common')
-  const { user, isLoading, logout } = useAuth()
+  const { user, isLoading, logout, isAdmin } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
@@ -72,6 +72,14 @@ export const Navbar: React.FC = () => {
                       {t('nav.dashboard')}
                     </Link>
                   </DropdownMenuItem>
+                  {isAdmin && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/admin" className="cursor-pointer">
+                        <Shield className="mr-2 h-4 w-4" />
+                        Admin Panel
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild>
                     <Link href="/history" className="cursor-pointer">
                       {t('nav.history')}
@@ -150,6 +158,15 @@ export const Navbar: React.FC = () => {
                 >
                   {t('nav.dashboard')}
                 </Link>
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Admin Panel
+                  </Link>
+                )}
                 <Link
                   href="/history"
                   className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary"
