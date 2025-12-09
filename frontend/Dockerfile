@@ -1,17 +1,24 @@
-FROM node:18-alpine
+FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
-RUN npm install
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .
 
-EXPOSE 3000
+# Create uploads directory
+RUN mkdir -p static/uploads
 
-CMD ["npm", "run", "dev"]
+# Cloud Run expects the app on port 8080
+ENV PORT=8080
+EXPOSE 8080
 
+CMD ["python", "app.py"]

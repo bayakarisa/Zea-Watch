@@ -150,16 +150,25 @@ def analyze():
 
         model_version = os.getenv('MODEL_VERSION', '1.0.0')
 
-        result = db_service.save_prediction(
-            user_id=user_id,  # <-- authenticated users saved; guest = None
-            image_url=image_url,
-            label=disease,
-            confidence=normalized_confidence,
-            raw_scores=raw_scores,
-            model_version=model_version,
-            description=description,
-            recommendation=recommendation
-        )
+        try:
+            result = db_service.save_prediction(
+                user_id=user_id,  # <-- authenticated users saved; guest = None
+                image_url=image_url,
+                label=disease,
+                confidence=normalized_confidence,
+                raw_scores=raw_scores,
+                model_version=model_version,
+                description=description,
+                recommendation=recommendation
+            )
+        except Exception as e:
+            print(f"WARNING: Failed to save prediction to database: {e}")
+            # Fallback for ID if database fails
+            import uuid
+            result = {
+                'id': str(uuid.uuid4()),
+                'created_at': None
+            }
 
         # Get treatment recommendations from model
         treatment = model.get_treatment_recommendation(disease)

@@ -112,7 +112,7 @@ def too_large(error):
 
 # Run the application
 if __name__ == '__main__':
-    port = int(os.getenv('PORT', 5000))
+    port = int(os.getenv('PORT', 8080))
     debug_mode = os.getenv('ENVIRONMENT', 'development') != 'production'
 
     print(f"[INFO] Starting ZeaWatch API on port {port}")
