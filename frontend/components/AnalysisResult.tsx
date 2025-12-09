@@ -5,7 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { AnalysisResult as AnalysisResultType } from '@/utils/api'
 import { CheckCircle2, XCircle } from 'lucide-react'
 import { Button } from './ui/button'
+import { ConfidenceDisplay } from './ConfidenceDisplay'
 import ReactMarkdown from 'react-markdown'
+import { useTranslation } from 'react-i18next'
 
 interface AnalysisResultProps {
   result: AnalysisResultType
@@ -13,15 +15,14 @@ interface AnalysisResultProps {
 }
 
 export const AnalysisResult: React.FC<AnalysisResultProps> = ({ result, onClose }) => {
+  const { t } = useTranslation('common')
   return (
     <Card className="w-full border-primary border-2">
       <CardHeader>
         <div className="flex justify-between items-start">
           <div>
-            <CardTitle className="text-primary mb-2">Analysis Complete</CardTitle>
-            <p className="text-sm text-gray-600">
-              Confidence: <strong>{result.confidence.toFixed(1)}%</strong>
-            </p>
+            <CardTitle className="text-primary mb-2">{t('actions.analysis_complete')}</CardTitle>
+            <ConfidenceDisplay confidence={result.confidence} />
           </div>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <XCircle className="h-5 w-5" />

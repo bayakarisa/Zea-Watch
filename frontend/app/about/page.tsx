@@ -7,6 +7,30 @@ import { Footer } from '@/components/Footer'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2 } from 'lucide-react'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+
+const teamMembers = [
+  {
+    name: 'Joseph Baya Karisa',
+    role: 'Software Developer',
+    description: 'Lead developer focused on building scalable agricultural solutions.'
+  },
+  {
+    name: 'Lucian Talu Mayabi',
+    role: 'Data Scientist',
+    description: 'Expert in machine learning and crop disease analytics.'
+  },
+  {
+    name: 'Daniel Murunga',
+    role: 'Economist',
+    description: 'Specializing in agricultural economics and market trends.'
+  },
+  {
+    name: 'Selina Auma',
+    role: 'Market Analyst',
+    description: 'Analyzing market data to connect farmers with opportunities.'
+  }
+]
 
 function AboutContent() {
   const searchParams = useSearchParams()
@@ -101,18 +125,52 @@ function AboutContent() {
             <Card>
               <CardHeader>
                 <CardTitle>Our Team</CardTitle>
+                <CardDescription>
+                  Meet the dedicated professionals working to revolutionize agriculture.
+                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground">
-                  ZeaWatch is built by a diverse team of agricultural scientists, AI researchers,
-                  software engineers, and UX designers who share a passion for sustainable agriculture
-                  and technology innovation.
-                </p>
-                <p className="text-muted-foreground">
-                  Our team brings together expertise in machine learning, plant pathology, full-stack
-                  development, and user experience design to create a platform that is both powerful
-                  and accessible.
-                </p>
+              <CardContent className="space-y-8">
+                {/* Team Banner */}
+                <div className="rounded-lg overflow-hidden shadow-md">
+                  <div className="bg-yellow-500 py-6 px-4 text-center">
+                    <h2 className="text-3xl font-bold text-green-900">OUR TEAM</h2>
+                  </div>
+                  <div className="relative aspect-[21/9] w-full bg-green-900">
+                    <img
+                      src="/team-overview.png"
+                      alt="ZeaWatch Team Overview"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                  {teamMembers.map((member) => (
+                    <Card key={member.name} className="overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
+                      <div className="flex items-start p-4 gap-4">
+                        <Avatar className="h-16 w-16 border-2 border-primary/20">
+                          <AvatarFallback className="text-lg bg-primary/10 text-primary">
+                            {member.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="space-y-1">
+                          <h3 className="font-bold text-lg leading-none">{member.name}</h3>
+                          <p className="text-sm font-medium text-primary">{member.role}</p>
+                          <p className="text-sm text-muted-foreground pt-1">
+                            {member.description}
+                          </p>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+
+                <div className="bg-primary/5 p-6 rounded-lg text-center mt-8">
+                  <p className="text-muted-foreground">
+                    ZeaWatch is built by a diverse team of agricultural scientists, AI researchers,
+                    software engineers, and UX designers who share a passion for sustainable agriculture.
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

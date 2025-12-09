@@ -13,6 +13,7 @@
     "actions": {
         "upload": "Upload Image",
         "analyze": "Analyze",
+        "analysis_complete": "Analysis Complete",
         "cancel": "Cancel",
         "save": "Save",
         "delete": "Delete",
@@ -69,6 +70,9 @@
     },
     "history": {
         "title": "Analysis History",
+        "scan_history": "Scan History",
+        "review_results": "Review your previous analysis results.",
+        "loading": "Loading history...",
         "export_csv": "Export CSV",
         "filters": {
             "title": "Filters",
@@ -81,6 +85,7 @@
             "clear": "Clear Filters"
         },
         "empty": {
+            "title": "No Scan History Yet",
             "no_analyses": "No analyses yet. Start analyzing leaves to see your history.",
             "no_matches": "No analyses match your filters."
         },
@@ -142,6 +147,11 @@
         "legend": {
             "title": "Legend"
         }
+    },
+    "confidence_levels": {
+        "high": "High",
+        "moderate": "Moderate",
+        "low": "Low"
     },
     "auth": {
         "signin": {

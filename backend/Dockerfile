@@ -17,7 +17,8 @@ COPY . .
 # Create uploads directory
 RUN mkdir -p static/uploads
 
-EXPOSE 5000
+# Cloud Run expects the app on port 8080
+ENV PORT=8080
+EXPOSE 8080
 
 CMD ["python", "app.py"]
-

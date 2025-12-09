@@ -5,8 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Leaf, Trash2 } from 'lucide-react'
 import { getHistory, deleteHistoryItem, AnalysisResult } from '@/utils/api'
 import { Button } from './ui/button'
+import { ConfidenceDisplay } from './ConfidenceDisplay'
+import { useTranslation } from 'react-i18next'
 
 export const ScanHistoryCard: React.FC = () => {
+  const { t } = useTranslation('common')
   const [history, setHistory] = useState<AnalysisResult[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -39,23 +42,23 @@ export const ScanHistoryCard: React.FC = () => {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-gray-800">Scan History</CardTitle>
+        <CardTitle className="text-gray-800">{t('history.scan_history')}</CardTitle>
         <CardDescription className="text-gray-600">
-          Review your previous analysis results.
+          {t('history.review_results')}
         </CardDescription>
       </CardHeader>
       <CardContent>
         {isLoading ? (
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading history...</p>
+            <p className="text-gray-600">{t('history.loading')}</p>
           </div>
         ) : history.length === 0 ? (
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
             <Leaf className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-            <p className="text-gray-700 mb-2 font-medium">No Scan History Yet</p>
+            <p className="text-gray-700 mb-2 font-medium">{t('history.empty.title')}</p>
             <p className="text-sm text-gray-500">
-              Your analyzed maize leaf images will appear here. Start by uploading or capturing an image!
+              {t('history.empty.no_analyses')}
             </p>
           </div>
         ) : (
@@ -79,11 +82,7 @@ export const ScanHistoryCard: React.FC = () => {
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <h3 className="font-semibold text-foreground">{item.disease}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Confidence: {typeof item.confidence === 'number' 
-                            ? (item.confidence <= 1 ? (item.confidence * 100).toFixed(1) : item.confidence.toFixed(1))
-                            : item.confidence}%
-                        </p>
+                        <ConfidenceDisplay confidence={typeof item.confidence === 'number' ? item.confidence : 0} className="w-48 mt-1" />
                       </div>
                       <Button
                         variant="ghost"
@@ -96,7 +95,7 @@ export const ScanHistoryCard: React.FC = () => {
                     </div>
                     <p className="text-sm text-gray-600 mb-2">{item.description}</p>
                     <p className="text-xs text-gray-500">
-                      <strong>Recommendation:</strong> {item.recommendation}
+                      <strong>{t('history.details.recommendation')}:</strong> {item.recommendation}
                     </p>
                     {item.created_at && (
                       <p className="text-xs text-gray-400 mt-2">
